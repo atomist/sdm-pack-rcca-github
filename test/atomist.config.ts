@@ -15,32 +15,33 @@
  */
 
 import {
+    ClientLogging,
+    Configuration,
+    configureLogging,
+} from "@atomist/automation-client";
+import {
     SoftwareDeliveryMachine,
     SoftwareDeliveryMachineConfiguration,
 } from "@atomist/sdm";
 import {
+    configureSdm,
     createSoftwareDeliveryMachine,
 } from "@atomist/sdm-core";
+import { watchGitHub } from "../lib/watchGitHub";
 
-/**
- * Initialize an sdm definition, and add functionality to it.
- *
- * @param configuration All the configuration for this service
- */
-export function machine(
-    configuration: SoftwareDeliveryMachineConfiguration,
-): SoftwareDeliveryMachine {
-
+function machine(config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine {
     const sdm = createSoftwareDeliveryMachine({
-        name: "Empty Seed Software Delivery Machine",
-        configuration,
+        name: "Atomist Software Delivery Machine",
+        configuration: config,
     });
 
-    /*
-     * this is a good place to type
-    sdm.
-     * and see what the IDE suggests for after the dot
-     */
+    sdm.addExtensionPacks(watchGitHub());
 
     return sdm;
 }
+
+export const configuration: Configuration = {
+    postProcessors: [
+        configureSdm(machine),
+    ],
+};

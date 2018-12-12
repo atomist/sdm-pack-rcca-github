@@ -2,57 +2,21 @@
   <img src="https://images.atomist.com/sdm/SDM-Logo-Dark.png">
 </p>
 
-# @atomist-seeds/empty-sdm
+# @atomist/sdm-pack-github-rcca
 
-[![atomist sdm goals](http://badge.atomist.com/T29E48P34/atomist-seeds/empty-sdm/c796f715-67c3-48ae-8b7c-45c0fd31443f)](https://app.atomist.com/workspace/T29E48P34)
-[![npm version](https://img.shields.io/npm/v/@atomist-seeds/empty-sdm.svg)](https://www.npmjs.com/package/@atomist-seeds/empty-sdm)
+[![npm version](https://img.shields.io/npm/v/@atomist/sdm-pack-rcca-github.svg)](https://www.npmjs.com/package/@atomist/sdm-pack-rcca-github)
 
-The simplest possible [Atomist][atomist] software delivery machine
-(SDM).
+[Atomist][atomist] software delivery machine (SDM) extension Pack to manage and converge GitHub resources.
 
-Software delivery machines enable you to control your delivery process
-in code.  Think of it as an API for your software delivery.  See the
-[Atomist documentation][atomist-doc] for more information on the
-concept of a software delivery machine and how to create and develop
-an SDM.
+See the [Atomist documentation][atomist-doc] for more information on
+what SDMs are and what they can do for you using the Atomist API for
+software.
 
 [atomist-doc]: https://docs.atomist.com/ (Atomist Documentation)
 
-## Getting started
+## Usage
 
-See the [Developer Quick Start][atomist-quick] to jump straight to
-creating an SDM.
-
-[atomist-quick]: https://docs.atomist.com/quick-start/ (Atomist - Developer Quick Start)
-
-## Contributing
-
-Contributions to this project from community members are encouraged
-and appreciated. Please review the [Contributing
-Guidelines](CONTRIBUTING.md) for more information. Also see the
-[Development](#development) section in this document.
-
-## Code of conduct
-
-This project is governed by the [Code of
-Conduct](CODE_OF_CONDUCT.md). You are expected to act in accordance
-with this code by participating. Please report any unacceptable
-behavior to code-of-conduct@atomist.com.
-
-## Documentation
-
-Please see [docs.atomist.com][atomist-doc] for
-[developer][atomist-doc-sdm] documentation.
-
-[atomist-doc-sdm]: https://docs.atomist.com/developer/sdm/ (Atomist Documentation - SDM Developer)
-
-## Connect
-
-Follow [@atomist][atomist-twitter] and [The Composition][atomist-blog]
-blog related to SDM.
-
-[atomist-twitter]: https://twitter.com/atomist (Atomist on Twitter)
-[atomist-blog]: https://the-composition.com/ (The Composition - The Official Atomist Blog)
+TODO
 
 ## Support
 
@@ -61,29 +25,28 @@ channel in the [Atomist community Slack workspace][slack].
 
 If you find a problem, please create an [issue][].
 
-[issue]: https://github.com/atomist-seeds/empty-sdm/issues
+[issue]: https://github.com/atomist/sdm-pack-docker/issues
 
 ## Development
 
-You will need to install [Node.js][node] to build and test this
-project.
+You will need to install [Node][node] to build and test this project.
 
 [node]: https://nodejs.org/ (Node.js)
 
 ### Build and test
 
-Install dependencies.
+Use the following package scripts to build, test, and perform other
+development tasks.
 
-```
-$ npm install
-```
-
-Use the `build` package script to compile, test, lint, and build the
-documentation.
-
-```
-$ npm run build
-```
+Command | Reason
+------- | ------
+`npm install` | install project dependencies
+`npm run build` | compile, test, lint, and generate docs
+`npm run lint` | run TSLint against the TypeScript
+`npm run compile` | generate types from GraphQL and compile TypeScript
+`npm test` | run tests
+`npm run autotest` | run tests every time a file changes
+`npm run clean` | remove files generated during build
 
 ### Release
 
@@ -98,4 +61,7 @@ Created by [Atomist][atomist].
 Need Help?  [Join our Slack workspace][slack].
 
 [atomist]: https://atomist.com/ (Atomist - How Teams Deliver Software)
+[slack]: https://join.atomist.com/ (Atomist Community Slack)
+
+[atomist]: https://atomist.com/ (Atomist - Development Automation)
 [slack]: https://join.atomist.com/ (Atomist Community Slack)

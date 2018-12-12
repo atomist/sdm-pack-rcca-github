@@ -1,8 +1,12 @@
 {
-  "name": "sdm-pack-rcca-github",
+  "name": "@atomist/sdm-pack-rcca-github",
   "version": "0.1.0",
-  "description": "my new project",
-  "author": "cdupuis",
+  "description": "An Atomist extension pack to manage GitHub resources like Webhooks",
+  "author": {
+    "name": "Atomist",
+    "email": "support@atomist.com",
+    "url": "https://atomist.com/"
+  },
   "license": "Apache-2.0",
   "homepage": "https://github.com/atomist/sdm-pack-rcca-github#readme",
   "repository": {
@@ -16,16 +20,25 @@
     "atomist",
     "automation",
     "sdm",
-    "seed"
+    "rcca",
+    "github"
   ],
   "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@atomist/automation-client": "^1.1.0",
-    "@atomist/sdm": "^1.1.0",
-    "@atomist/sdm-core": "^1.1.0"
+    "@types/fs-extra": "^5.0.4",
+    "fs-extra": "^7.0.1"
+  },
+  "peerDependencies": {
+    "@atomist/automation-client": ">=1.1.0",
+    "@atomist/sdm": ">=1.1.0",
+    "@atomist/sdm-core": ">=1.1.0",
+    "@atomist/sdm-local": ">=1.0.3"
   },
   "devDependencies": {
+    "@atomist/automation-client": "1.1.0",
+    "@atomist/sdm": "^1.1.0",
+    "@atomist/sdm-core": "^1..0",
     "@atomist/sdm-local": "^1.0.3",
     "@types/mocha": "^5.2.5",
     "@types/power-assert": "^1.5.0",
