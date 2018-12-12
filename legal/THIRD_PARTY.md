@@ -1,8 +1,8 @@
-# `@atomist-seeds/empty-sdm`
+# `sdm-pack-rcca-github`
 
-`@atomist-seeds/empty-sdm` is licensed under Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0).
+`sdm-pack-rcca-github` is licensed under Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
-This page details all runtime OSS dependencies of `@atomist-seeds/empty-sdm`.
+This page details all runtime OSS dependencies of `sdm-pack-rcca-github`.
 
 ## Licenses
 
