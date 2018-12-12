@@ -16,11 +16,11 @@
 
 import { HttpMethod } from "@atomist/automation-client";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm";
+import { AbstractActivityFeedEventReader } from "./support/AbstractActivityFeedEventReader";
 import {
     FeedEvent,
     ScmFeedCriteria,
 } from "./support/FeedEvent";
-import { AbstractActivityFeedEventReader } from "./support/AbstractActivityFeedEventReader";
 
 export class GitHubActivityFeedEventReader extends AbstractActivityFeedEventReader {
 
