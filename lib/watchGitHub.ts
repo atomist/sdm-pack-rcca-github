@@ -24,7 +24,9 @@ import {
     metadata,
 } from "@atomist/sdm";
 import { isInLocalMode } from "@atomist/sdm-core";
-import { determineDefaultRepositoryOwnerParentDirectory } from "@atomist/sdm-local/lib/sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
+import {
+    determineDefaultRepositoryOwnerParentDirectory,
+} from "@atomist/sdm-local/lib/sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
 import { GitHubActivityFeedEventReader } from "./GitHubActivityFeedEventReader";
 import { ScmFeedCriteria } from "./support/FeedEvent";
 import { startWatching } from "./support/watcher";
@@ -37,8 +39,6 @@ import { startWatching } from "./support/watcher";
  * sdm.scm.user should be "true" if this is the name of an owner, not an org
  * sdm.scm.intervalSeconds changes the polling interval, which defaults to 10 seconds
  * sdm.scm.apiBase enables you to set your GHE server: default is GitHub.com
- *
- * You must also set GITHUB_TOKEN in your environment.
  */
 // TODO CD allow configuration options to be passed into the pack function
 export function watchGitHub(): ExtensionPack {
@@ -55,7 +55,7 @@ export function watchGitHub(): ExtensionPack {
             if (!isInLocalMode()) {
                 return;
             }
-            // This is required as sdm-local will disable logging via its index
+            // TODO CD remove this! This is required as sdm-local will disable logging via its index
             configureLogging(ClientLogging);
 
             const provider = "github";
