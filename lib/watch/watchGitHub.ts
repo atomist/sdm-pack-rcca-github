@@ -20,7 +20,9 @@ import {
     metadata,
 } from "@atomist/sdm";
 import { isInLocalMode } from "@atomist/sdm-core";
-import { determineDefaultRepositoryOwnerParentDirectory } from "@atomist/sdm-local/lib/sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
+import {
+    determineDefaultRepositoryOwnerParentDirectory,
+} from "@atomist/sdm-local/lib/sdm/configuration/defaultLocalSoftwareDeliveryMachineConfiguration";
 import * as _ from "lodash";
 import { GitHubActivityFeedEventReader } from "./GitHubActivityFeedEventReader";
 import { ScmFeedCriteria } from "./support/FeedEvent";
