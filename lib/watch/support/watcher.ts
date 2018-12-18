@@ -51,7 +51,7 @@ export function startWatching(criteria: ScmFeedCriteria,
                 try {
                     logger.info("Reading SCM activity feed for '%s'", criteria.owner);
                     const newEvents = (await setup.feedEventReader.readNewEvents())
-                        .filter(isRelevantEvent) as RepoEvent[];
+                        .filter(isRelevantEvent);
                     await updateClonedProjects(criteria, newEvents, setup.repositoryOwnerParentDirectory);
                     logger.info("Finished reading SCM activity feed for '%s'", criteria.owner);
                 } catch (e) {
