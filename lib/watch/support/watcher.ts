@@ -23,12 +23,10 @@ import { dirFor } from "@atomist/sdm-local/lib/sdm/binding/project/expandedTreeU
 import * as fs from "fs-extra";
 import {
     FeedEventReader,
-    isPushEvent,
-    PushEvent,
+    isRelevantEvent,
+    RepoEvent,
     ScmFeedCriteria,
 } from "./FeedEvent";
-
-export const DefaultPollingIntervalSeconds = 10;
 
 /**
  * Start watching this remote org
@@ -38,22 +36,24 @@ export const DefaultPollingIntervalSeconds = 10;
 export function startWatching(criteria: ScmFeedCriteria,
                               setup: {
                                   repositoryOwnerParentDirectory: string,
-                                  intervalSeconds?: number,
+                                  interval?: number,
                                   feedEventReader: FeedEventReader,
                               },
                               sdm: SoftwareDeliveryMachine): void {
 
-    if (criteria.user || criteria.owner) {
+    if (criteria.owner && criteria.owner.length > 0) {
         sdm.addStartupListener(async () => setup.feedEventReader.start());
         sdm.addTriggeredListener({
             trigger: {
-                interval: 1000 * (setup.intervalSeconds || DefaultPollingIntervalSeconds),
+                interval: setup.interval,
             },
             listener: async () => {
                 try {
+                    logger.info("Reading SCM activity feed for '%s'", criteria.owner);
                     const newEvents = (await setup.feedEventReader.readNewEvents())
-                        .filter(isPushEvent);
+                        .filter(isRelevantEvent) as RepoEvent[];
                     await updateClonedProjects(criteria, newEvents, setup.repositoryOwnerParentDirectory);
+                    logger.info("Finished reading SCM activity feed for '%s'", criteria.owner);
                 } catch (e) {
                     logger.error("Error attempting to poll SCM provider: %s", e.message);
                 }
@@ -66,9 +66,8 @@ export function startWatching(criteria: ScmFeedCriteria,
  * Update projects based on commit criteria
  */
 async function updateClonedProjects(criteria: ScmFeedCriteria,
-                                    feedEvents: PushEvent[],
+                                    feedEvents: RepoEvent[],
                                     repositoryOwnerParentDirectory: string): Promise<void> {
-    logger.info("Reading SCM activity feed for '%s'", criteria.owner);
     for (const pushEvent of feedEvents) {
         // Update to events
         const dir = dirFor(repositoryOwnerParentDirectory, pushEvent.repo.owner, pushEvent.repo.repo);

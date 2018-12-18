@@ -12,6 +12,33 @@ export interface FeedEvent {
 export interface RepoEvent extends FeedEvent {
 
     repo: RepoId;
+
+    /**
+     * Branch
+     */
+    ref: string;
+
+    actor: {
+        login: string;
+    };
+}
+
+/**
+ * Delete
+ */
+export interface DeleteEvent extends RepoEvent {
+
+    type: "DeleteEvent";
+
+}
+
+/**
+ * Create
+ */
+export interface CreateEvent extends RepoEvent {
+
+    type: "CreateEvent";
+
 }
 
 /**
@@ -22,23 +49,15 @@ export interface PushEvent extends RepoEvent {
     type: "PushEvent";
 
     /**
-     * Branch
-     */
-    ref: string;
-
-    /**
      * After sha
      */
     head: string;
 
-    actor: {
-        login: string;
-    };
 }
 
-export function isPushEvent(a: any): a is PushEvent {
-    const maybe = a as PushEvent;
-    return maybe.type === "PushEvent";
+export function isRelevantEvent(a: any): a is RepoEvent {
+    const maybe = a as RepoEvent;
+    return ["PushEvent", "CreateEvent", "DeleteEvent"].includes(maybe.type);
 }
 
 // TODO how many events do we get?
@@ -47,8 +66,7 @@ export function isPushEvent(a: any): a is PushEvent {
  * Typically used in creating a FeedEventReader
  */
 export interface ScmFeedCriteria {
-    readonly scheme?: string;
-    readonly apiBase?: string;
+    readonly apiUrl?: string;
     readonly owner: string;
     readonly user?: boolean;
 }

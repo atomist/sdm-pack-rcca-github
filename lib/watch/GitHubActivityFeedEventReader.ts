@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { HttpMethod } from "@atomist/automation-client";
+import {
+    HttpMethod,
+    logger,
+} from "@atomist/automation-client";
 import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm";
 import { AbstractActivityFeedEventReader } from "./support/AbstractActivityFeedEventReader";
 import {
@@ -25,6 +28,7 @@ import {
 export class GitHubActivityFeedEventReader extends AbstractActivityFeedEventReader {
 
     constructor(protected readonly criteria: ScmFeedCriteria,
+                protected readonly token: string,
                 protected readonly configuration: SoftwareDeliveryMachineConfiguration) {
         super(criteria);
     }
@@ -37,14 +41,14 @@ export class GitHubActivityFeedEventReader extends AbstractActivityFeedEventRead
     public async readNewEvents(): Promise<FeedEvent[]> {
 
         // TODO how many events do you get
-        const url = `${this.criteria.scheme || "https://"}${this.criteria.apiBase || "api.github.com"}/${
+        const url = `${this.criteria.apiUrl || "api.github.com"}/${
             !!this.criteria.user ? "users" : "orgs"}/${this.criteria.owner}/events`;
 
         const client = this.configuration.http.client.factory.create(url);
         const r = await client.exchange(url, {
             method: HttpMethod.Get,
             headers: {
-                Authentication: `token ${this.configuration.token}`,
+                Authorization: `token ${this.token}`,
             },
         });
         const eventsRead = r.body as any[];
@@ -53,6 +57,7 @@ export class GitHubActivityFeedEventReader extends AbstractActivityFeedEventRead
             .map(toFeedEvent)
             .filter(e => !this.eventWindow.some(seen => seen.id === e.id));
         this.eventWindow.push(...newEvents);
+        logger.debug(JSON.stringify(newEvents));
         return newEvents;
     }
 

@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-    ClientLogging,
-    Configuration,
-    configureLogging,
-} from "@atomist/automation-client";
+import { Configuration } from "@atomist/automation-client";
 import {
     SoftwareDeliveryMachine,
     SoftwareDeliveryMachineConfiguration,
@@ -27,7 +23,7 @@ import {
     configureSdm,
     createSoftwareDeliveryMachine,
 } from "@atomist/sdm-core";
-import { watchGitHub } from "../lib/watchGitHub";
+import { watchGitHub } from "../lib/watch/watchGitHub";
 
 function machine(config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine {
     const sdm = createSoftwareDeliveryMachine({
@@ -35,7 +31,9 @@ function machine(config: SoftwareDeliveryMachineConfiguration): SoftwareDelivery
         configuration: config,
     });
 
-    sdm.addExtensionPacks(watchGitHub());
+    sdm.addExtensionPacks(watchGitHub({
+        owner: "atomist-playground",
+    }));
 
     return sdm;
 }
