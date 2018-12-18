@@ -15,5 +15,9 @@
  */
 
 export {
+    ConvergenceOptions,
+    convergeGitHub,
+} from "./lib/converge/convergeGitHub";
+export {
     watchGitHub,
-} from "./lib/watchGitHub";
+} from "./lib/watch/watchGitHub";

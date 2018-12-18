@@ -1,0 +1,29 @@
+subscription OnScmProvider($type: [ProviderType!]) {
+    SCMProvider(providerTypes: $type) {
+        name
+        url
+        providerId
+        id
+        private
+        apiUrl
+        gitUrl
+        providerType
+        configuration {
+            name
+            description
+            value
+            message
+            authProviderId
+        }
+        state
+        webhooks {
+            id
+            url
+            tags {
+                name
+                value
+            }
+        }
+    }
+}
+

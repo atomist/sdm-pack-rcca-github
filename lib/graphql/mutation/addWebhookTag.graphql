@@ -1,0 +1,5 @@
+mutation AddWebhookTag($id: ID!, $name: String!, $value: String!) {
+    addWebhookTag(id: $id, name: $name, value: $value) {
+        id
+    }
+}

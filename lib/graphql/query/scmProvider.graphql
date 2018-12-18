@@ -1,0 +1,28 @@
+query ScmProvider($type: ProviderType!) {
+    SCMProvider(providerType: $type) {
+        name
+        url
+        providerId
+        id
+        private
+        apiUrl
+        gitUrl
+        providerType
+        configuration {
+            name
+            description
+            value
+            message
+            authProviderId
+        }
+        state
+        webhooks {
+            id
+            url
+            tags {
+                name
+                value
+            }
+        }
+    }
+}
