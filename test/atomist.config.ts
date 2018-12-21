@@ -23,7 +23,7 @@ import {
     configureSdm,
     createSoftwareDeliveryMachine,
 } from "@atomist/sdm-core";
-import { watchGitHub } from "../lib/watch/watchGitHub";
+import { convergeGitHub } from "../lib/converge/convergeGitHub";
 
 function machine(config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine {
     const sdm = createSoftwareDeliveryMachine({
@@ -31,9 +31,12 @@ function machine(config: SoftwareDeliveryMachineConfiguration): SoftwareDelivery
         configuration: config,
     });
 
-    sdm.addExtensionPacks(watchGitHub({
-        owner: "atomist-playground",
-    }));
+    sdm.addExtensionPacks(
+        /*watchGitHub({
+            owner: "atomist-playground",
+        }),*/
+        convergeGitHub(),
+    );
 
     return sdm;
 }

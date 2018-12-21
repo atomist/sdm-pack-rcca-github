@@ -1,5 +1,5 @@
-subscription OnScmProvider($type: [ProviderType!]) {
-    SCMProvider(providerTypes: $type) {
+subscription OnScmProvider($type: ProviderType!) {
+    SCMProvider(providerType: $type) {
         name
         url
         providerId

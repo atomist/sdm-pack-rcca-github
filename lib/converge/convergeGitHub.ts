@@ -54,8 +54,15 @@ export interface ConvergenceOptions {
 
     /**
      * Interval in ms of convergence runs
+     * If not value is provided here, configuration is checked at 'sdm.converge.github.interval'
      */
     interval?: number;
+
+    /**
+     * Provider type to converge for
+     * If not value is provided here, configuration is checked at 'sdm.converge.github.providerType'
+     */
+    providerType?: ProviderType.github_com | ProviderType.ghe;
 }
 
 /**
@@ -70,6 +77,7 @@ export function convergeGitHub(options: ConvergenceOptions = {}): ExtensionPack 
             const optsToUse: ConvergenceOptions = {
                 token: _.get(sdm, "configuration.sdm.converge.github.token") || _.get(sdm, "configuration.token"),
                 interval: _.get(sdm, "configuration.sdm.converge.github.interval", 1000 * 60 * 10),
+                providerType: _.get(sdm, "configuration.sdm.converge.github.providerType", ProviderType.github_com),
                 ...options,
             };
 
@@ -125,11 +133,11 @@ async function convergeWorkspace(workspaceId: string,
 
 function onScmProviderHandler(options: ConvergenceOptions): EventHandlerRegistration<OnScmProvider.Subscription> {
     return {
-        name: "OnGitHubScmProvider",
+        name: "OnGitHubComScmProvider",
         subscription: GraphQL.subscription({
             name: "OnScmProvider",
             variables: {
-                type: GraphQL.enumValue([ProviderType.github_com, ProviderType.ghe]),
+                type: GraphQL.enumValue(options.providerType),
             },
         }),
         description: "Converge on GitHub ScmProvider events",
