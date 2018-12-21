@@ -3,7 +3,8 @@
 [![atomist sdm goals](http://badge.atomist.com/T29E48P34/atomist/sdm-pack-rcca-github/5c16710c-8f0f-4807-b550-4a7077ed82c4)](https://app.atomist.com/workspace/T29E48P34)
 [![npm version](https://img.shields.io/npm/v/@atomist/sdm-pack-rcca-github.svg)](https://www.npmjs.com/package/@atomist/sdm-pack-rcca-github)
 
-[Atomist][atomist] software delivery machine (SDM) extension Pack to manage and converge GitHub resources.
+[Atomist][atomist] software delivery machine (SDM) extension Pack 
+to manage and converge GitHub resources.
 
 See the [Atomist documentation][atomist-doc] for more information on
 what SDMs are and what they can do for you using the Atomist API for
@@ -12,6 +13,43 @@ software.
 [atomist-doc]: https://docs.atomist.com/ (Atomist Documentation)
 
 ## Usage
+
+### Converging GitHub Organizations
+
+Use the Atomist CLI to create or configure your GitHub SCM provider
+configuration with Atomist:
+
+```
+# To login and connect to Atomist run:
+$ atomist config
+
+# If you already have an Atomist workspace you can skip the next step:
+$ atomist workspace create
+
+# Finally run the following command to create a GitHub SCM provider:
+$ atomist provider create
+```
+
+Once you created the SCM provider, you can now start converging it. To
+do this, install this extension pack into your SDM:
+
+```
+$ npm install @atomist/sdm-pack-rcca-github
+```
+
+Next register the `convergeGitHub` pack in your SDM:
+
+```typescript
+import { convergeGitHub } from "@atomist/sdm-pack-rcca-github";
+
+...
+    sdm.addExtensionPacks(
+        convergeGitHub(),
+    );
+...
+```
+
+### Polling GitHub Organization or User
 
 TODO
 
