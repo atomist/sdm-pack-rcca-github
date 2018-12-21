@@ -1,4 +1,4 @@
-# @atomist/sdm-pack-github-rcca
+# @atomist/sdm-pack-rcca-github
 
 [![atomist sdm goals](http://badge.atomist.com/T29E48P34/atomist/sdm-pack-rcca-github/5c16710c-8f0f-4807-b550-4a7077ed82c4)](https://app.atomist.com/workspace/T29E48P34)
 [![npm version](https://img.shields.io/npm/v/@atomist/sdm-pack-rcca-github.svg)](https://www.npmjs.com/package/@atomist/sdm-pack-rcca-github)
