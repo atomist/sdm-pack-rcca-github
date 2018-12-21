@@ -51,7 +51,47 @@ import { convergeGitHub } from "@atomist/sdm-pack-rcca-github";
 
 ### Polling GitHub Organization or User
 
-TODO
+This pack supports polling for SCM events against GitHub or GHE.
+
+The following steps install and register the extension in your SDM:
+
+```
+$ npm install @atomist/sdm-pack-rcca-github
+```
+
+Next register the `convergeGitHub` pack in your SDM:
+
+```typescript
+import { watchGitHub } from "@atomist/sdm-pack-rcca-github";
+
+...
+    sdm.addExtensionPacks(
+        watchGitHub({
+            owner: ["atomist", "atomisthq"],
+        }),
+    );
+...
+```
+
+The configuration can also be provided in the `client.config.json`:
+
+```json
+{
+  "sdm": {
+    "watch": {
+      "github": {
+        "token": "<your github token>",
+        "owner": ["atomist", "atomisthq"],
+        "user": false,
+        "interval": 60000,
+        "apiUrl": "https://api.github.com"        
+      }
+    }
+  }
+}
+```
+
+_Note: This extension only watches GitHub when the SDM is started in local mode `atomist start --local`_ 
 
 ## Support
 
