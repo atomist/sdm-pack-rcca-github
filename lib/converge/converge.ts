@@ -42,6 +42,9 @@ import {
     printError,
 } from "./github";
 
+/**
+ * Start the convergence for an entire workspace
+ */
 export async function convergeWorkspace(workspaceId: string,
                                         sdm: SoftwareDeliveryMachine,
                                         options: ConvergenceOptions): Promise<void> {
@@ -65,6 +68,11 @@ export async function convergeWorkspace(workspaceId: string,
     }
 }
 
+/**
+ * Converge a single provider
+ *
+ * This is main entry point into the GitHub webhook convergence logic
+ */
 // tslint:disable:cyclomatic-complexity
 export async function convergeProvider(provider: ScmProvider.ScmProvider,
                                        graphClient: GraphClient): Promise<HandlerResult> {
@@ -166,6 +174,9 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
 }
 // tslint:enable:cyclomatic-complexity
 
+/**
+ * Converge a single org
+ */
 export async function convergeOrg(org: string,
                                   provider: ScmProvider.ScmProvider,
                                   token: string,
@@ -228,6 +239,9 @@ export async function convergeOrg(org: string,
     });
 }
 
+/**
+ * Converge a single repo
+ */
 // tslint:disable:cyclomatic-complexity
 export async function convergeRepo(owner: string,
                                    repo: string,

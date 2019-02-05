@@ -83,6 +83,9 @@ export function convergeGitHub(options: ConvergenceOptions = {}): ExtensionPack 
     };
 }
 
+/**
+ * EventHandlerRegistration listening for new SCMProvider events and triggering the convergence function
+ */
 function onScmProviderHandler(options: ConvergenceOptions): EventHandlerRegistration<OnScmProvider.Subscription> {
     return {
         name: "OnScmProvider",
