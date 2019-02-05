@@ -1,21 +1,35 @@
 subscription OnScmProvider($type: ProviderType!) {
     SCMProvider(providerType: $type) {
-        name
-        url
-        providerId
-        id
-        private
         apiUrl
+        url
         gitUrl
         providerType
-        configuration {
-            name
-            description
-            value
-            message
-            authProviderId
+        id
+        providerId
+        name
+        targetConfiguration {
+            orgSpecs
+            repoSpecs {
+                ownerSpec
+                nameSpec
+            }
         }
-        state
+        state {
+            error
+            name
+        }
+        authProviderId
+        credential {
+            scopes
+            secret
+            owner {
+                person {
+                    scmId {
+                        login
+                    }
+                }
+            }
+        }
         webhooks {
             id
             url
@@ -26,4 +40,3 @@ subscription OnScmProvider($type: ProviderType!) {
         }
     }
 }
-

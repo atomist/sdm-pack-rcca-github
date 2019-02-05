@@ -22,7 +22,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["index.ts", "bin/*.ts", "lib/**/*.ts", "test/**/*.ts"],
+  "include": [
+    "atomist.config.ts", "bin/*.ts", "lib/**/*.ts", "test/**/*.ts"],
   "exclude": [".#*"],
   "compileOnSave": true,
   "buildOnSave": false,

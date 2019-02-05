@@ -23,7 +23,7 @@
     "rcca",
     "github"
   ],
-  "main": "./index.js",
+  "main": "atomist.config.js",
   "types": "./index.d.ts",
   "dependencies": {
     "@octokit/rest": "^16.2.0",
@@ -39,9 +39,9 @@
     "@atomist/sdm-local": ">=1.0.3"
   },
   "devDependencies": {
-    "@atomist/automation-client": "1.2.0-master.20181217203653",
-    "@atomist/sdm": "1.2.0-master.20181218005143",
-    "@atomist/sdm-core": "1.2.0-master.20181213212357",
+    "@atomist/automation-client": "1.3.0-master.20190205210857",
+    "@atomist/sdm": "1.3.0-master.20190205121804",
+    "@atomist/sdm-core": "1.3.0-master.20190203162110",
     "@atomist/sdm-local": "1.0.4-master.20181211132012",
     "@types/mocha": "^5.2.5",
     "@types/power-assert": "^1.5.0",

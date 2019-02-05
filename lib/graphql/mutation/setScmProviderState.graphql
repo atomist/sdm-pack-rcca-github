@@ -1,0 +1,5 @@
+mutation SetScmProviderState($id: ID!, $state: SCMProviderStateName!, $error: String) {
+    setSCMProviderState(id: $id, providerState: {state: $state, error: $error}) {
+        id
+    }
+}

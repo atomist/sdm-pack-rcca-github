@@ -1,14 +1,5 @@
-mutation CreateWebhook($providerId: String!, $secret: String!, $header: String!, $name: String!, $tags: [TagInput]) {
-    createWebhook(
-        webhook: {
-            providerId: $providerId
-            name: $name
-            authType: hmac_sha1
-            tags: $tags
-            hmacSha1: {
-                header: $header
-                secret: $secret
-            }}) {
+mutation CreateWebhook($resourceProviderId: String!, $secret: String!, $header: String!, $name: String!, $tags: [TagInput]) {
+    createWebhook(webhook: {resourceProviderId: $resourceProviderId, name: $name, authType: hmac_sha1, tags: $tags, hmacSha1: {header: $header, secret: $secret}}) {
         url
         id
     }
