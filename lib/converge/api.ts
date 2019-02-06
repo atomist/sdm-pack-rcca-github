@@ -17,6 +17,7 @@
 import {
     GraphClient,
     logger,
+    QueryNoCacheOptions,
 } from "@atomist/automation-client";
 import * as _ from "lodash";
 import {
@@ -24,6 +25,7 @@ import {
     CreateWebhook,
     DeleteWebhook,
     ScmProvider,
+    ScmProviderById,
     ScmProviderStateName,
     SetScmProviderState,
 } from "../typings/types";
@@ -77,10 +79,10 @@ export async function addWebhookTag(graphClient: GraphClient,
     });
 }
 
-export async function setScmProviderState(graphClient: GraphClient,
-                                          provider: ScmProvider.ScmProvider,
-                                          state: ScmProviderStateName = ScmProviderStateName.converged,
-                                          errors?: string[]): Promise<void> {
+export async function setProviderState(graphClient: GraphClient,
+                                       provider: ScmProvider.ScmProvider,
+                                       state: ScmProviderStateName = ScmProviderStateName.converged,
+                                       errors?: string[]): Promise<void> {
     const newError = (errors || []).sort((e1, e2) => e1.localeCompare(e2)).join(", ");
     const currentState = _.get(provider, "state.name");
     const currentError = _.get(provider, "state.error");
@@ -94,4 +96,16 @@ export async function setScmProviderState(graphClient: GraphClient,
             },
         });
     }
+}
+
+
+export async function loadProvider(graphClient: GraphClient,
+                                   id: string): Promise<ScmProvider.ScmProvider> {
+    return (await graphClient.query<ScmProviderById.Query, ScmProviderById.Variables>({
+        name: "ScmProviderById",
+        variables: {
+            id,
+        },
+        options: QueryNoCacheOptions,
+    })).SCMProvider[0];
 }

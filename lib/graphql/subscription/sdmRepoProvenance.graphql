@@ -1,0 +1,9 @@
+subscription OnSdmRepoProvenance {
+    SdmRepoProvenance {
+        repo(providerId: ["zjlmxjzwhurspem"]) @required {
+            name
+            owner
+            providerId
+        }
+    }
+}

@@ -29,6 +29,7 @@ import {
     convergeProvider,
     convergeWorkspace,
 } from "./converge";
+import { ConvergeRepoOnRepoProvenance } from "./repo";
 
 /**
  * Configuration options for the GitHub RCCA
@@ -45,6 +46,16 @@ export interface ConvergenceOptions {
      * If not value is provided here, configuration is checked at 'sdm.converge.github.providerType'
      */
     providerType?: ProviderType.github_com | ProviderType.ghe;
+
+    /**
+     * Additional events that can trigger convergence
+     */
+    events?: {
+        /**
+         * Generated repos via one of your SDM generators should get a repo webhook
+         */
+        repoGenerated?: boolean;
+    };
 }
 
 /**
@@ -59,6 +70,7 @@ export function convergeGitHub(options: ConvergenceOptions = {}): ExtensionPack 
             const optsToUse: ConvergenceOptions = {
                 interval: _.get(sdm, "configuration.sdm.converge.github.interval", 1000 * 60 * 10),
                 providerType: _.get(sdm, "configuration.sdm.converge.github.providerType", ProviderType.github_com),
+                events: _.get(sdm, "configuration.sdm.converge.github.events", { repoGenerated: false }),
                 ...options,
             };
 
@@ -76,6 +88,10 @@ export function convergeGitHub(options: ConvergenceOptions = {}): ExtensionPack 
                     },
                 });
                 sdm.addStartupListener(converge);
+            }
+
+            if (_.get(optsToUse, "events.repoGenerated") === true) {
+                sdm.addEvent(ConvergeRepoOnRepoProvenance);
             }
 
             sdm.addEvent(onScmProviderHandler(optsToUse));

@@ -33,7 +33,8 @@ import {
 } from "../typings/types";
 import {
     deleteWebhook,
-    setScmProviderState,
+    loadProvider,
+    setProviderState,
 } from "./api";
 import { ConvergenceOptions } from "./convergeGitHub";
 import {
@@ -126,7 +127,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
 
     const webhooksToDelete: string[] = [];
     // Delete webhooks for orgs or repos that went away; for now only mark them to get deleted later
-    for (const webhook of (await loadProvider(graphClient, provider)).webhooks) {
+    for (const webhook of (await loadProvider(graphClient, provider.id)).webhooks) {
         const org = webhook.tags.find(t => t.name === "org");
         const repo = webhook.tags.find(t => t.name === "repo");
         const hookId = webhook.tags.find(t => t.name === "hook_id");
@@ -167,7 +168,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
     }
 
     // Mark all hooks with no hook_id to get deleted
-    for (const webhook of (await loadProvider(graphClient, provider)).webhooks) {
+    for (const webhook of (await loadProvider(graphClient, provider.id)).webhooks) {
         const hookId = webhook.tags.find(t => t.name === "hook_id");
         if (!hookId) {
             logger.info(`Deleting webhook because of missing hook_id`);
@@ -180,7 +181,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
         await deleteWebhook(graphClient, webhookToDelete);
     }
 
-    await setScmProviderState(graphClient, provider, state, errors);
+    await setProviderState(graphClient, provider, state, errors);
 
     return Success;
 }
@@ -333,13 +334,3 @@ export async function convergeRepo(owner: string,
 
 // tslint:enable:cyclomatic-complexity
 
-export async function loadProvider(graphClient: GraphClient,
-                                   provider: ScmProvider.ScmProvider): Promise<ScmProvider.ScmProvider> {
-    return (await graphClient.query<ScmProviderById.Query, ScmProviderById.Variables>({
-        name: "ScmProviderById",
-        variables: {
-            id: provider.id,
-        },
-        options: QueryNoCacheOptions,
-    })).SCMProvider[0];
-}

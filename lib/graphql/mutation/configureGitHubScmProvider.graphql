@@ -1,0 +1,5 @@
+mutation ConfigureGitHubScmProvider($id: ID!, $orgs: [String!]!, $repos: [SCMResourceProviderRepoInput!]!) {
+    configureGitHubResourceProvider(id: $id, config: { orgs: $orgs, repos: $repos}) {
+        id
+    }
+}
