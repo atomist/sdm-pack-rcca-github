@@ -26,7 +26,7 @@
   "main": "atomist.config.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@octokit/rest": "^16.2.0",
+    "@octokit/rest": "^16.15.0",
     "@types/fs-extra": "^5.0.4",
     "fs-extra": "^7.0.1",
     "lodash": "^4.17.11",

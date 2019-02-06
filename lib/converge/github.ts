@@ -81,14 +81,11 @@ export async function createRepoWebhook(owner: string,
 export function gitHub(token: string, provider: ScmProvider.ScmProvider): github {
     const apiUrl = new URL(provider.apiUrl);
     const api = new github({
+        auth: `token ${token}`,
         protocol: apiUrl.protocol,
         host: apiUrl.host,
         port: +apiUrl.port,
         pathPrefix: apiUrl.pathname,
-    });
-    api.authenticate({
-        type: "token",
-        token,
     });
     return api;
 }
