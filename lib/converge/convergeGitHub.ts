@@ -88,7 +88,7 @@ export function convergeGitHub(options: ConvergenceOptions = {}): ExtensionPack 
  */
 function onScmProviderHandler(options: ConvergenceOptions): EventHandlerRegistration<OnScmProvider.Subscription> {
     return {
-        name: "OnScmProvider",
+        name: "ConvergeGitHubOnScmProvider",
         subscription: GraphQL.subscription({
             name: "OnScmProvider",
             variables: {
