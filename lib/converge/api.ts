@@ -98,7 +98,6 @@ export async function setProviderState(graphClient: GraphClient,
     }
 }
 
-
 export async function loadProvider(graphClient: GraphClient,
                                    id: string): Promise<ScmProvider.ScmProvider> {
     return (await graphClient.query<ScmProviderById.Query, ScmProviderById.Variables>({

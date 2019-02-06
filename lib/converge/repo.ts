@@ -42,7 +42,7 @@ export const ConvergeRepoOnRepoProvenance: EventHandlerRegistration<OnSdmRepoPro
         const provider = await loadProvider(ctx.graphClient, `${ctx.workspaceId}_${providerId}`);
 
         const secret = _.get(provider, "credential.secret") as string;
-        const targetConfiguration = _.get(provider, "targetConfiguration") as TargetConfiguration;
+        const targetConfiguration = _.get(provider, "targetConfiguration");
 
         if (!!secret && !!targetConfiguration) {
             const hasOrg = targetConfiguration.orgSpecs.some(o => o === owner);
