@@ -1,0 +1,42 @@
+query ScmProviderById($id: ID!) {
+  SCMProvider(id: $id) {
+    apiUrl
+    url
+    gitUrl
+    providerType
+    id
+    providerId
+    name
+    targetConfiguration {
+      orgSpecs
+      repoSpecs {
+        ownerSpec
+        nameSpec
+      }
+    }
+    state {
+      error
+      name
+    }
+    authProviderId
+    credential {
+      scopes
+      secret
+      owner {
+        person {
+          scmId {
+            login
+          }
+        }
+      }
+    }
+    webhooks {
+      id
+      url
+      tags {
+        name
+        value
+      }
+    }
+  }
+}

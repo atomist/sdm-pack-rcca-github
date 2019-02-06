@@ -23,8 +23,10 @@ import {
     Success,
 } from "@atomist/automation-client";
 import { SoftwareDeliveryMachine } from "@atomist/sdm";
+import * as _ from "lodash";
 import {
     ScmProvider,
+    ScmProviderById,
     ScmProviderStateName,
     SetOwnerLogin,
     SetRepoLogin,
@@ -86,39 +88,52 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
     const orgs = provider.targetConfiguration.orgSpecs || [];
     const repos = provider.targetConfiguration.repoSpecs || [];
 
-    let error = false;
+    const errors: string[] = [];
+    let state: ScmProviderStateName;
 
     for (const org of orgs) {
         try {
             logger.info(`Converging GitHub org '${org}'`);
             await convergeOrg(org, provider, token, graphClient);
         } catch (e) {
-            error = true;
             logger.error(`Error converging GitHub org '${org}': `, e);
             if (isAuthError(e)) {
-                await setScmProviderState(
-                    graphClient,
-                    provider,
-                    ScmProviderStateName.unauthorized,
-                    `Authorization error occurred converging GitHub org '${org}'`);
+                state = ScmProviderStateName.unauthorized;
+                errors.push(`Authorization error occurred converging GitHub org '${org}'`);
             } else {
-                await setScmProviderState(
-                    graphClient,
-                    provider,
-                    ScmProviderStateName.misconfigured,
-                    `Failed to converge GitHub org '${org}': ${printError(e)}`);
+                state = state === ScmProviderStateName.unauthorized ? ScmProviderStateName.unauthorized : ScmProviderStateName.misconfigured;
+                errors.push(`Failed to converge GitHub org '${org}': ${printError(e)}`);
             }
         }
     }
 
-    // Delete webhooks for orgs that went away
-    for (const webhook of provider.webhooks) {
+    for (const repo of repos) {
+        const slug = `${repo.ownerSpec}/${repo.nameSpec}`;
+        try {
+            logger.info(`Converging GitHub repo '${slug}'`);
+            await convergeRepo(repo.ownerSpec, repo.nameSpec, provider, token, graphClient);
+        } catch (e) {
+            logger.error(`Error converging GitHub slug '${slug}': `, e);
+            if (isAuthError(e)) {
+                state = ScmProviderStateName.unauthorized;
+                errors.push(`Authorization error occurred converging GitHub repo '${slug}'`);
+            } else {
+                state = state === ScmProviderStateName.unauthorized ? ScmProviderStateName.unauthorized : ScmProviderStateName.misconfigured;
+                errors.push(`Failed to converge GitHub repo '${slug}': ${printError(e)}`);
+            }
+        }
+    }
+
+    const webhooksToDelete: string[] = [];
+    // Delete webhooks for orgs or repos that went away; for now only mark them to get deleted later
+    for (const webhook of (await loadProvider(graphClient, provider)).webhooks) {
         const org = webhook.tags.find(t => t.name === "org");
+        const repo = webhook.tags.find(t => t.name === "repo");
         const hookId = webhook.tags.find(t => t.name === "hook_id");
 
-        if (!provider.targetConfiguration.orgSpecs.some(o => o === org.value)) {
+        if (!!org && !provider.targetConfiguration.orgSpecs.some(o => o === org.value)) {
             logger.info(`Deleting GitHub webhook on org '${org.value}' because it is no longer in target configuration`);
-            await deleteWebhook(graphClient, webhook.id);
+            webhooksToDelete.push(webhook.id);
             if (!!hookId) {
                 try {
                     await gitHub(token, provider).orgs.deleteHook({
@@ -130,48 +145,46 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
                         `Failed to delete GitHub webhook on org '${org.value}'`);
                 }
             }
-        }
-    }
-
-    for (const repo of repos) {
-        const slug = `${repo.ownerSpec}/${repo.nameSpec}`;
-        try {
-            logger.info(`Converging GitHub repo '${slug}'`);
-            await convergeRepo(repo.ownerSpec, repo.nameSpec, provider, token, graphClient);
-        } catch (e) {
-            error = true;
-            logger.error(`Error converging GitHub slug '${slug}': `, e);
-            if (isAuthError(e)) {
-                await setScmProviderState(
-                    graphClient,
-                    provider,
-                    ScmProviderStateName.unauthorized,
-                    `Authorization error occurred converging GitHub repo '${slug}'`);
-            } else {
-                await setScmProviderState(
-                    graphClient,
-                    provider,
-                    ScmProviderStateName.misconfigured,
-                    `Failed to converge GitHub repo '${slug}': ${printError(e)}`);
+        } else if (!!repo) {
+            const slug = repo.value.split("/");
+            if (!provider.targetConfiguration.repoSpecs.some(o => o.ownerSpec === slug[0] && o.nameSpec === slug[1])) {
+                logger.info(`Deleting GitHub webhook on repo '${repo.value}' because it is no longer in target configuration`);
+                webhooksToDelete.push(webhook.id);
+                if (!!hookId) {
+                    try {
+                        await gitHub(token, provider).repos.deleteHook({
+                            hook_id: +hookId.value,
+                            owner: slug[0],
+                            repo: slug[1],
+                        });
+                    } catch (e) {
+                        logger.info(
+                            `Failed to delete GitHub webhook on repo '${repo.value}'`);
+                    }
+                }
             }
         }
     }
 
-    // Delete all hooks with no hook_id
-    for (const webhook of provider.webhooks) {
+    // Mark all hooks with no hook_id to get deleted
+    for (const webhook of (await loadProvider(graphClient, provider)).webhooks) {
         const hookId = webhook.tags.find(t => t.name === "hook_id");
         if (!hookId) {
             logger.info(`Deleting webhook because of missing hook_id`);
-            await deleteWebhook(graphClient, webhook.id);
+            webhooksToDelete.push(webhook.id);
         }
     }
 
-    if (!error) {
-        await setScmProviderState(graphClient, provider, ScmProviderStateName.converged);
+    // Finally delete webhooks that got marked for deletion
+    for (const webhookToDelete of _.uniq(webhooksToDelete)) {
+        await deleteWebhook(graphClient, webhookToDelete);
     }
+
+    await setScmProviderState(graphClient, provider, state, errors);
 
     return Success;
 }
+
 // tslint:enable:cyclomatic-complexity
 
 /**
@@ -317,4 +330,16 @@ export async function convergeRepo(owner: string,
         },
     });
 }
+
 // tslint:enable:cyclomatic-complexity
+
+export async function loadProvider(graphClient: GraphClient,
+                                   provider: ScmProvider.ScmProvider): Promise<ScmProvider.ScmProvider> {
+    return (await graphClient.query<ScmProviderById.Query, ScmProviderById.Variables>({
+        name: "ScmProviderById",
+        variables: {
+            id: provider.id,
+        },
+        options: QueryNoCacheOptions,
+    })).SCMProvider[0];
+}

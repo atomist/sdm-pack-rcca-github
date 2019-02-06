@@ -79,20 +79,18 @@ export async function addWebhookTag(graphClient: GraphClient,
 
 export async function setScmProviderState(graphClient: GraphClient,
                                           provider: ScmProvider.ScmProvider,
-                                          state: ScmProviderStateName,
-                                          error?: string): Promise<void> {
+                                          state: ScmProviderStateName = ScmProviderStateName.converged,
+                                          errors?: string[]): Promise<void> {
+    const newError = (errors || []).sort((e1, e2) => e1.localeCompare(e2)).join(", ");
     const currentState = _.get(provider, "state.name");
-    let currentError = _.get(provider, "state.error");
-    if (currentError === "") {
-        currentError = undefined;
-    }
-    if (state !== currentState || currentError !== error) {
+    const currentError = _.get(provider, "state.error");
+    if (state !== currentState || newError !== currentError) {
         await graphClient.mutate<SetScmProviderState.Mutation, SetScmProviderState.Variables>({
             name: "SetScmProviderState",
             variables: {
                 id: provider.id,
                 state,
-                error,
+                error: newError,
             },
         });
     }
