@@ -92,7 +92,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
     const errors: string[] = [];
     let state: ScmProviderStateName;
 
-    for (const org of orgs) {
+    for (const org of _.uniq(orgs)) {
         try {
             logger.info(`Converging GitHub org '${org}'`);
             await convergeOrg(org, provider, token, graphClient);
@@ -108,7 +108,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
         }
     }
 
-    for (const repo of repos) {
+    for (const repo of _.uniqWith(repos, _.isEqual)) {
         const slug = `${repo.ownerSpec}/${repo.nameSpec}`;
         try {
             logger.info(`Converging GitHub repo '${slug}'`);
