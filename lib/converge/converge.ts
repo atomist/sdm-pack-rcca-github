@@ -26,7 +26,6 @@ import { SoftwareDeliveryMachine } from "@atomist/sdm";
 import * as _ from "lodash";
 import {
     ScmProvider,
-    ScmProviderById,
     ScmProviderStateName,
     SetOwnerLogin,
     SetRepoLogin,
@@ -53,10 +52,7 @@ export async function convergeWorkspace(workspaceId: string,
                                         options: ConvergenceOptions): Promise<void> {
 
     // Look for SCMProviders of type github_com
-    const graphClient = new ApolloGraphClient(
-        `${sdm.configuration.endpoints.graphql}/${workspaceId}`,
-        { Authorization: `Bearer ${sdm.configuration.apiKey}` });
-
+    const graphClient = sdm.configuration.graphql.client.factory.create(workspaceId, sdm.configuration);
     const providers = await graphClient.query<ScmProvider.Query, ScmProvider.Variables>({
         name: "ScmProvider",
         variables: {

@@ -39,7 +39,7 @@
     "@atomist/sdm-local": ">=1.0.3"
   },
   "devDependencies": {
-    "@atomist/automation-client": "1.3.0-master.20190205210857",
+    "@atomist/automation-client": "1.3.0-master.20190228133619",
     "@atomist/sdm": "1.3.0-master.20190205121804",
     "@atomist/sdm-core": "1.3.0-master.20190203162110",
     "@atomist/sdm-local": "1.0.4-master.20181211132012",
