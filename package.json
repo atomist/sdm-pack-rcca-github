@@ -33,16 +33,16 @@
     "minimatch": "^3.0.4"
   },
   "peerDependencies": {
-    "@atomist/automation-client": ">=1.1.0",
-    "@atomist/sdm": ">=1.1.0",
-    "@atomist/sdm-core": ">=1.1.0",
-    "@atomist/sdm-local": ">=1.0.3"
+    "@atomist/automation-client": ">=1.3.0",
+    "@atomist/sdm": ">=1.3.0",
+    "@atomist/sdm-core": ">=1.3.0",
+    "@atomist/sdm-local": ">=1.0.5"
   },
   "devDependencies": {
-    "@atomist/automation-client": "1.3.0-master.20190228133619",
-    "@atomist/sdm": "1.3.0-master.20190205121804",
-    "@atomist/sdm-core": "1.3.0-master.20190203162110",
-    "@atomist/sdm-local": "1.0.4-master.20181211132012",
+    "@atomist/automation-client": "^1.3.0",
+    "@atomist/sdm": "^1.3.0",
+    "@atomist/sdm-core": "^1.3.0",
+    "@atomist/sdm-local": "^1.0.5",
     "@types/mocha": "^5.2.5",
     "@types/power-assert": "^1.5.0",
     "espower-typescript": "^9.0.0",
