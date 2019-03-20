@@ -1,6 +1,6 @@
 {
   "name": "@atomist/sdm-pack-rcca-github",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An Atomist extension pack to manage GitHub resources like Webhooks",
   "author": {
     "name": "Atomist",
