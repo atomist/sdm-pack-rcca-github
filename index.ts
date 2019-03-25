@@ -15,6 +15,10 @@
  */
 
 export {
+    autoMerge,
+} from "./lib/auto-merge/autoMerge";
+
+export {
     ConvergenceOptions,
     convergeGitHub,
 } from "./lib/converge/convergeGitHub";
