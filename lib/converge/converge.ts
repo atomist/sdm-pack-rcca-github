@@ -110,7 +110,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
             logger.info(`Converging GitHub repo '${slug}'`);
             await convergeRepo(repo.ownerSpec, repo.nameSpec, provider, token, graphClient);
         } catch (e) {
-            logger.error(`Error converging GitHub slug '${slug}': `, e);
+            logger.error(`Error converging GitHub repo '${slug}': `, e);
             if (isAuthError(e)) {
                 state = ScmProviderStateName.unauthorized;
                 errors.push(`Authorization error occurred converging GitHub repo '${slug}'`);
