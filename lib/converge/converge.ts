@@ -98,7 +98,8 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
                 state = ScmProviderStateName.unauthorized;
                 errors.push(`Authorization error occurred converging GitHub org '${org}'`);
             } else {
-                state = state === ScmProviderStateName.unauthorized ? ScmProviderStateName.unauthorized : ScmProviderStateName.misconfigured;
+                state = ScmProviderStateName.unauthorized ? ScmProviderStateName.unauthorized : ScmProviderStateName.misconfigured;
+                logger.error(`Failed to converge GitHub org '${org}': ${printError(e)}\n${e.stack}`)
                 errors.push(`Failed to converge GitHub org '${org}': ${printError(e)}`);
             }
         }
@@ -115,7 +116,8 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
                 state = ScmProviderStateName.unauthorized;
                 errors.push(`Authorization error occurred converging GitHub repo '${slug}'`);
             } else {
-                state = state === ScmProviderStateName.unauthorized ? ScmProviderStateName.unauthorized : ScmProviderStateName.misconfigured;
+                state = ScmProviderStateName.unauthorized ? ScmProviderStateName.unauthorized : ScmProviderStateName.misconfigured;
+                logger.error(`Failed to converge GitHub repo '${slug}': ${printError(e)}\n${e.stack}`)
                 errors.push(`Failed to converge GitHub repo '${slug}': ${printError(e)}`);
             }
         }
