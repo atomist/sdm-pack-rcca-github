@@ -1,0 +1,48 @@
+subscription autoMergeOnStatus {
+  Status {
+    _id
+    commit {
+      pullRequests {
+        number
+        body
+        title
+        branch {
+          name
+        }
+        labels {
+          name
+        }
+        head {
+          sha
+          statuses {
+            state
+            context
+            description
+            targetUrl
+          }
+        }
+        reviews {
+          state
+          by {
+            login
+          }
+        }
+        commits {
+          message
+        }
+        repo {
+          name
+          owner
+          org {
+            provider {
+              apiUrl
+            }
+          }
+        }
+        comments {
+          body
+        }
+      }
+    }
+  }
+}
