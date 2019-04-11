@@ -24,5 +24,6 @@ export {
 } from "./lib/converge/convergeGitHub";
 
 export {
-    githubWatchSupport,
+    // exporting this will bring in sdm-local
+    // githubWatchSupport,
 } from "./lib/watch/watchGitHub";
