@@ -62,7 +62,7 @@ export interface ConvergenceOptions {
  * GitHub RCCA Extension Pack to manage webhook resources on GitHub.com or on-prem GHE
  * @param options
  */
-export function convergeGitHub(options: ConvergenceOptions = {}): ExtensionPack {
+export function githubConvergeSupport(options: ConvergenceOptions = {}): ExtensionPack {
     return {
         ...metadata("converge"),
         configure: sdm => {

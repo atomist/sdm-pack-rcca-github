@@ -15,10 +15,14 @@
  */
 
 export {
-    autoMerge,
+    githubAutoMergeSupport,
 } from "./lib/auto-merge/autoMerge";
 
 export {
     ConvergenceOptions,
-    convergeGitHub,
+    githubConvergeSupport,
 } from "./lib/converge/convergeGitHub";
+
+export {
+    githubWatchSupport,
+} from "./lib/watch/watchGitHub";

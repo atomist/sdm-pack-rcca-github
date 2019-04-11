@@ -46,7 +46,7 @@ export interface WatchOptions {
     apiUrl?: string;
 }
 
-export function watchGitHub(options: WatchOptions = {}): ExtensionPack {
+export function githubWatchSupport(options: WatchOptions = {}): ExtensionPack {
     return {
         ...metadata("watch"),
         requiredConfigurationValues: [

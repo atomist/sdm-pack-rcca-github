@@ -50,7 +50,7 @@ export const AutoMergeMethods = ["merge", "rebase", "squash"];
 export const OrgTokenParameters: ParametersObject<{ token: string }>
     = { token: { declarationType: DeclarationType.Secret, uri: Secrets.OrgToken } };
 
-export function autoMerge(): ExtensionPack {
+export function githubAutoMergeSupport(): ExtensionPack {
     return {
         ...metadata("auto-merge"),
         configure: sdm => {

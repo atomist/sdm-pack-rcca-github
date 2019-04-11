@@ -23,11 +23,11 @@ import {
     configureSdm,
     createSoftwareDeliveryMachine,
 } from "@atomist/sdm-core";
-import { convergeGitHub } from "../lib/converge/convergeGitHub";
+import { githubConvergeSupport } from "../lib/converge/convergeGitHub";
 
 function machine(config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine {
     const sdm = createSoftwareDeliveryMachine({ name: "RCCA Test SDM", configuration: config });
-    sdm.addExtensionPacks(convergeGitHub());
+    sdm.addExtensionPacks(githubConvergeSupport());
     return sdm;
 }
 
