@@ -26,7 +26,6 @@ import * as _ from "lodash";
 import {
     IngestScmOrgs,
     OwnerType,
-    RepoSpecs,
     ScmProvider,
     ScmProviderStateName,
     SetOwnerLogin,
@@ -85,7 +84,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
 
     const token = provider.credential.secret;
     const orgs: string[] = _.get(provider, "targetConfiguration.orgSpecs") || [];
-    const repos: RepoSpecs[] = _.get(provider, "targetConfiguration.repoSpecs") || [];
+    const repos: ScmProvider.RepoSpecs[] = _.get(provider, "targetConfiguration.repoSpecs") || [];
 
     const errors: string[] = [];
     let state: ScmProviderStateName;
@@ -184,6 +183,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
     // Finally retrieve all existing orgs and send them over for ingestion
     const readOrg = provider.credential.scopes.some(scope => scope === "read:org");
     if (readOrg) {
+        logger.info(`Ingesting orgs`);
         const newOrgs = [];
 
         const options = gitHub(token, provider).orgs.listForAuthenticatedUser.endpoint.merge({});
