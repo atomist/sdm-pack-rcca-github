@@ -28,7 +28,7 @@ This page details all runtime OSS dependencies of `@atomist/sdm-pack-rcca-github
 |[GPL-3.0](#gpl-30)|3|
 |[ISC](#isc)|140|
 |[MIT AND BSD-3-Clause](#mit-and-bsd-3-clause)|1|
-|[MIT](#mit)|1004|
+|[MIT](#mit)|1006|
 |[UNKNOWN](#unknown)|1|
 |[Unlicense](#unlicense)|1|
 |[WTFPL](#wtfpl)|5|
@@ -410,6 +410,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`@oclif/plugin-warn-if-update-available`|`1.7.0`|Jeff Dickey @jdxcode|[https://github.com/oclif/plugin-warn-if-update-available](https://github.com/oclif/plugin-warn-if-update-available)|
 |`@oclif/screen`|`1.0.4`|Jeff Dickey @jdxcode|[https://github.com/oclif/screen](https://github.com/oclif/screen)|
 |`@octokit/endpoint`|`3.2.3`|Gregor Martynus|[https://github.com/octokit/endpoint.js](https://github.com/octokit/endpoint.js)|
+|`@octokit/plugin-throttling`|`2.4.0`|Simon Grondin|[https://github.com/octokit/plugin-throttling.js](https://github.com/octokit/plugin-throttling.js)|
 |`@octokit/request`|`2.4.2`|Gregor Martynus|[https://github.com/octokit/request.js](https://github.com/octokit/request.js)|
 |`@octokit/rest`|`16.20.0`|Gregor Martynus|[https://github.com/octokit/rest.js](https://github.com/octokit/rest.js)|
 |`@samverschueren/stream-to-observable`|`0.3.0`||[https://github.com/SamVerschueren/stream-to-observable](https://github.com/SamVerschueren/stream-to-observable)|
@@ -584,6 +585,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`binary-extensions`|`1.13.0`|Sindre Sorhus|[https://github.com/sindresorhus/binary-extensions](https://github.com/sindresorhus/binary-extensions)|
 |`bluebird`|`3.5.3`|Petka Antonov|[https://github.com/petkaantonov/bluebird](https://github.com/petkaantonov/bluebird)|
 |`body-parser`|`1.18.3`||[https://github.com/expressjs/body-parser](https://github.com/expressjs/body-parser)|
+|`bottleneck`|`2.18.0`|Simon Grondin|[https://github.com/SGrondin/bottleneck](https://github.com/SGrondin/bottleneck)|
 |`boxen`|`1.3.0`|Sindre Sorhus|[https://github.com/sindresorhus/boxen](https://github.com/sindresorhus/boxen)|
 |`boxen`|`3.0.0`|Sindre Sorhus|[https://github.com/sindresorhus/boxen](https://github.com/sindresorhus/boxen)|
 |`brace-expansion`|`1.1.11`|Julian Gruber|[https://github.com/juliangruber/brace-expansion](https://github.com/juliangruber/brace-expansion)|
