@@ -15,7 +15,6 @@
  */
 
 import {
-    ApolloGraphClient,
     GraphClient,
     HandlerResult,
     logger,
@@ -25,6 +24,8 @@ import {
 import { SoftwareDeliveryMachine } from "@atomist/sdm";
 import * as _ from "lodash";
 import {
+    IngestScmOrgs,
+    OwnerType,
     ScmProvider,
     ScmProviderStateName,
     SetOwnerLogin,
@@ -174,9 +175,35 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
         }
     }
 
-    // Finally delete webhooks that got marked for deletion
+    // Delete webhooks that got marked for deletion
     for (const webhookToDelete of _.uniq(webhooksToDelete)) {
         await deleteWebhook(graphClient, webhookToDelete);
+    }
+
+    // Finally retrieve all existing orgs and send them over for ingestion
+    const readOrg = provider.credential.scopes.some(scope => scope === "read:org");
+    if (readOrg) {
+        const newOrgs = [];
+
+        const options = gitHub(token, provider).orgs.listForAuthenticatedUser.endpoint.merge({});
+        for await (const response of gitHub(token, provider).paginate.iterator(options)) {
+            newOrgs.push(...response.data);
+        }
+
+        await graphClient.mutate<IngestScmOrgs.Mutation, IngestScmOrgs.Variables>({
+            name: "ingestScmOrgs",
+            variables: {
+                scmProviderId: provider.providerId,
+                scmOrgsInput: {
+                    orgs: newOrgs.map(org => ({
+                        name: org.login,
+                        url: org.url,
+                        ownerType: OwnerType.organization,
+                        id: org.id,
+                    })),
+                },
+            },
+        });
     }
 
     await setProviderState(graphClient, provider, state, errors);

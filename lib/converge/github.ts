@@ -25,6 +25,10 @@ import {
     createWebhook,
 } from "./api";
 
+// Install the throttling plugin
+// tslint:disable:no-var-requires
+github.plugin(require("@octokit/plugin-throttling"));
+
 export async function createOrgWebhook(org: string,
                                        provider: ScmProvider.ScmProvider,
                                        token: string,
@@ -86,8 +90,26 @@ export function gitHub(token: string, provider: ScmProvider.ScmProvider): github
         host: apiUrl.host,
         port: +apiUrl.port,
         pathPrefix: apiUrl.pathname,
+        throttle: {
+            onRateLimit: (retryAfter: any, options: any) => {
+                logger.warn(`Request quota exhausted for request '${options.method} ${options.url}'`);
+
+                if (options.request.retryCount === 0) { // only retries once
+                    logger.debug(`Retrying after ${retryAfter} seconds!`);
+                    return true;
+                }
+                return false;
+            },
+            onAbuseLimit: (retryAfter: any, options: any) => {
+                logger.warn(`Abuse detected for request '${options.method} ${options.url}'`);
+            },
+        },
     });
     return api;
+}
+
+export function octokit(): any {
+    return github;
 }
 
 export function isAuthError(error: any): boolean {
