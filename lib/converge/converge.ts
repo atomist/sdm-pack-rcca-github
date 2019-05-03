@@ -194,13 +194,13 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
         await graphClient.mutate<IngestScmOrgs.Mutation, IngestScmOrgs.Variables>({
             name: "ingestScmOrgs",
             variables: {
-                scmProviderId: provider.providerId,
+                scmProviderId: provider.id,
                 scmOrgsInput: {
                     orgs: newOrgs.map(org => ({
                         name: org.login,
                         url: org.url,
                         ownerType: OwnerType.organization,
-                        id: org.id,
+                        id: org.id.toString(),
                     })),
                 },
             },
