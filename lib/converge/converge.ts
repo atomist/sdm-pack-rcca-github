@@ -26,6 +26,7 @@ import * as _ from "lodash";
 import {
     IngestScmOrgs,
     OwnerType,
+    RepoSpecs,
     ScmProvider,
     ScmProviderStateName,
     SetOwnerLogin,
@@ -78,13 +79,13 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
                                        graphClient: GraphClient): Promise<HandlerResult> {
 
     // Only deal with auth'ed providers
-    if (!provider.credential || !provider.credential.secret || !provider.targetConfiguration) {
+    if (!provider.credential || !provider.credential.secret) {
         return Success;
     }
 
     const token = provider.credential.secret;
-    const orgs = provider.targetConfiguration.orgSpecs || [];
-    const repos = provider.targetConfiguration.repoSpecs || [];
+    const orgs: string[] = _.get(provider, "targetConfiguration.orgSpecs") || [];
+    const repos: RepoSpecs[] = _.get(provider, "targetConfiguration.repoSpecs") || [];
 
     const errors: string[] = [];
     let state: ScmProviderStateName;
