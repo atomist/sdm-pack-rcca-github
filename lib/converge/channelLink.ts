@@ -36,7 +36,7 @@ export function onChannelLinked(sdm: SoftwareDeliveryMachine): EventHandlerRegis
         subscription: GraphQL.subscription("channelLinkCreated"),
         listener: async (e, ctx) => {
             const repo = e.data.ChannelLink[0].repo;
-            const provider = _.get(e.data, "ChannelLink[0].repo.org.scmProvider") as ChannelLinkCreated.ScmProvider;
+            const provider = _.get(e.data, "ChannelLink[0].repo.org.scmProvider");
 
             if (!!provider) {
                 const repoSpecs = provider.targetConfiguration.repoSpecs || [];
