@@ -39,7 +39,7 @@ export function onChannelLinked(sdm: SoftwareDeliveryMachine): EventHandlerRegis
             const provider = _.get(e.data, "ChannelLink[0].repo.org.scmProvider");
 
             if (!!provider) {
-                const repoSpecs = provider.targetConfiguration.repoSpecs || [];
+                const repoSpecs: ChannelLinkCreated.RepoSpecs[] = provider.targetConfiguration.repoSpecs || [];
                 if (!repoSpecs.some(r => r.ownerSpec === repo.owner && r.nameSpec === repo.name)) {
                     repoSpecs.push({ nameSpec: repo.name, ownerSpec: repo.owner });
 
