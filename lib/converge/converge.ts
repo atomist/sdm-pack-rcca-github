@@ -191,17 +191,24 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
             newOrgs.push(...response.data);
         }
 
+        const user = await gitHub(token, provider).users.getAuthenticated();
+
         await graphClient.mutate<IngestScmOrgs.Mutation, IngestScmOrgs.Variables>({
             name: "ingestScmOrgs",
             variables: {
                 scmProviderId: provider.id,
                 scmOrgsInput: {
-                    orgs: newOrgs.map(org => ({
+                    orgs: [...newOrgs.map(org => ({
                         name: org.login,
                         url: org.url,
                         ownerType: OwnerType.organization,
                         id: org.id.toString(),
-                    })),
+                    })), {
+                        name: user.data.login,
+                        url: user.data.html_url,
+                        ownerType: OwnerType.user,
+                        id: user.data.id.toString(),
+                    }],
                 },
             },
         });

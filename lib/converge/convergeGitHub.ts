@@ -25,11 +25,12 @@ import {
     OnScmProvider,
     ProviderType,
 } from "../typings/types";
+import { onChannelLinked } from "./channelLink";
 import {
     convergeProvider,
     convergeWorkspace,
 } from "./converge";
-import { ConvergeRepoOnRepoProvenance } from "./repo";
+import { onRepoProvenance } from "./repo";
 
 /**
  * Configuration options for the GitHub RCCA
@@ -91,10 +92,11 @@ export function githubConvergeSupport(options: ConvergenceOptions = {}): Extensi
             }
 
             if (_.get(optsToUse, "events.repoGenerated") === true) {
-                sdm.addEvent(ConvergeRepoOnRepoProvenance);
+                sdm.addEvent(onRepoProvenance(sdm));
             }
 
-            sdm.addEvent(onScmProviderHandler(optsToUse));
+            sdm.addEvent(onScmProvider(optsToUse));
+            sdm.addEvent(onChannelLinked(sdm));
         },
     };
 }
@@ -102,7 +104,7 @@ export function githubConvergeSupport(options: ConvergenceOptions = {}): Extensi
 /**
  * EventHandlerRegistration listening for new SCMProvider events and triggering the convergence function
  */
-function onScmProviderHandler(options: ConvergenceOptions): EventHandlerRegistration<OnScmProvider.Subscription> {
+function onScmProvider(options: ConvergenceOptions): EventHandlerRegistration<OnScmProvider.Subscription> {
     return {
         name: "ConvergeGitHubOnScmProvider",
         subscription: GraphQL.subscription({

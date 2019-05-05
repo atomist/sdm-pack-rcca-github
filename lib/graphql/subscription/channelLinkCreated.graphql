@@ -1,0 +1,21 @@
+subscription channelLinkCreated {
+  ChannelLink {
+    repo {
+      name
+      owner
+      org {
+        ownerType
+        scmProvider {
+          id
+          targetConfiguration {
+            orgSpecs
+            repoSpecs {
+              nameSpec
+              ownerSpec
+            }
+          }
+        }
+      }
+    }
+  }
+}
