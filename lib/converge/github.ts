@@ -82,8 +82,8 @@ export async function createRepoWebhook(owner: string,
     logger.debug(`Created new webhook for GitHub repo ${slug} with hook_id '${hookId}' and url '${cw.webhook.url}'`);
 }
 
-export function gitHub(token: string, provider: ScmProvider.ScmProvider): github {
-    const apiUrl = new URL(provider.apiUrl);
+export function gitHub(token: string, providerOrApiUrl: ScmProvider.ScmProvider | string): github {
+    const apiUrl = new URL(typeof providerOrApiUrl === "string" ? providerOrApiUrl : providerOrApiUrl.apiUrl);
     const api = new github({
         auth: `token ${token}`,
         protocol: apiUrl.protocol,

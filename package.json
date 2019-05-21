@@ -26,6 +26,7 @@
   "main": "atomist.config.js",
   "types": "./index.d.ts",
   "dependencies": {
+    "@atomist/slack-messages": "^1.1.0",
     "@octokit/plugin-throttling": "^2.4.0",
     "@octokit/rest": "^16.15.0",
     "@types/fs-extra": "^5.0.4",
