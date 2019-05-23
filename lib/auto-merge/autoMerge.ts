@@ -15,6 +15,7 @@
  */
 
 import {
+    doWithRetry,
     HandlerResult,
     logger,
     ProjectOperationCredentials,
@@ -30,9 +31,7 @@ import {
 } from "@atomist/sdm";
 import * as github from "@octokit/rest";
 import { AutoMergeOnReview } from "../typings/types";
-import {
-    autoMergeOnBuild,
-} from "./AutoMergeOnBuild";
+import { autoMergeOnBuild } from "./AutoMergeOnBuild";
 import { autoMergeOnPullRequest } from "./AutoMergeOnPullRequest";
 import { autoMergeOnReview } from "./AutoMergeOnReview";
 import { autoMergeOnStatus } from "./AutoMergeOnStatus";
@@ -87,44 +86,54 @@ export async function executeAutoMerge(pr: AutoMergeOnReview.PullRequest,
         if (isPrAutoMergeEnabled(pr)) {
             const api = gitHub(creds, apiUrl(pr.repo));
 
-            const gpr = await api.pulls.get({
-                owner: pr.repo.owner,
-                repo: pr.repo.name,
-                number: pr.number,
-            });
-            if (gpr.data.mergeable) {
-                await api.pulls.merge({
-                    owner: pr.repo.owner,
-                    repo: pr.repo.name,
-                    number: pr.number,
-                    merge_method: mergeMethod(pr),
-                    sha: pr.head.sha,
-                    commit_title: `Auto merge pull request #${pr.number} from ${pr.repo.owner}/${pr.repo.name}`,
-                });
-                const body = `Pull request auto merged by Atomist.
+            return doWithRetry<HandlerResult>(async () => {
+
+                    const gpr = await api.pulls.get({
+                        owner: pr.repo.owner,
+                        repo: pr.repo.name,
+                        number: pr.number,
+                    });
+
+                    if (gpr.data.mergeable === undefined || gpr.data.mergeable === null) {
+                        throw new Error("GitHub PR mergeable state not available. Retrying...");
+                    }
+
+                    if (!!gpr.data.mergeable) {
+                        await api.pulls.merge({
+                            owner: pr.repo.owner,
+                            repo: pr.repo.name,
+                            number: pr.number,
+                            merge_method: mergeMethod(pr),
+                            sha: pr.head.sha,
+                            commit_title: `Auto merge pull request #${pr.number} from ${pr.repo.owner}/${pr.repo.name}`,
+                        });
+                        const body = `Pull request auto merged by Atomist.
 
 * ${reviewComment(pr)}
 * ${statusComment(pr)}
 
 [${AtomistGeneratedLabel}] [${isPrTagged(
-                    pr, AutoMergeCheckSuccessLabel, AutoMergeCheckSuccessTag) ? AutoMergeCheckSuccessLabel : AutoMergeLabel}]`;
+                            pr, AutoMergeCheckSuccessLabel, AutoMergeCheckSuccessTag) ? AutoMergeCheckSuccessLabel : AutoMergeLabel}]`;
 
-                await api.issues.createComment({
-                    owner: pr.repo.owner,
-                    repo: pr.repo.name,
-                    number: pr.number,
-                    body,
-                });
-                await api.git.deleteRef({
-                    owner: pr.repo.owner,
-                    repo: pr.repo.name,
-                    ref: `heads/${pr.branch.name.trim()}`,
-                });
-                return Success;
-            } else {
-                logger.info("GitHub returned PR as not mergeable: '%j'", gpr.data);
-                return Success;
-            }
+                        await api.issues.createComment({
+                            owner: pr.repo.owner,
+                            repo: pr.repo.name,
+                            number: pr.number,
+                            body,
+                        });
+                        await api.git.deleteRef({
+                            owner: pr.repo.owner,
+                            repo: pr.repo.name,
+                            ref: `heads/${pr.branch.name.trim()}`,
+                        });
+                        return Success;
+                    } else {
+                        logger.info("GitHub returned PR as not mergeable: '%j'", gpr.data);
+                        return Success;
+                    }
+
+                },
+                "Auto merging GitHub PR");
         }
     }
     return Success;
