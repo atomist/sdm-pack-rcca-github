@@ -251,40 +251,12 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
             for await (const newRepo of newRepos) {
                 logger.debug(`Preparing repo ${newRepo.full_name}`);
 
-                let newBranch;
-                try {
-                    newBranch = (await gh.repos.getBranch({
-                        owner: orgId.owner,
-                        repo: newRepo.name,
-                        branch: newRepo.default_branch,
-                    })).data;
-                } catch (e) {
-                    logger.warn(`Failed to read branch data for '${newRepo.full_name}#${newRepo.default_branch}'`);
-                }
-
                 const ingest: ScmRepoInput = {
                     name: newRepo.name,
                     repoId: newRepo.id.toString(),
                     url: newRepo.html_url,
                     defaultBranch: newRepo.default_branch,
                 };
-
-                if (!!newBranch && !!_.get(newBranch, "commit.author")) {
-                    ingest.beforeCommit = {
-                        sha: newBranch.commit.sha,
-                        author: {
-                            login: newBranch.commit.author.login,
-                            name: newBranch.commit.commit.author.name,
-                            email: {
-                                address: newBranch.commit.commit.author.email,
-                            },
-                        },
-                        branchName: newBranch.name,
-                        message: newBranch.commit.commit.message,
-                        timestamp: newBranch.commit.commit.author.date,
-                        url: newBranch.commit.url,
-                    };
-                }
 
                 scmIngest.repos.push(ingest);
             }
