@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Add auto merge support. [#7](https://github.com/atomist/sdm-pack-rcca-github/issues/7)
+-   Move to latest repo ingestion schema. [#10](https://github.com/atomist/sdm-pack-rcca-github/issues/10)
 
 ## [0.1.0](https://github.com/atomist/sdm-pack-rcca-github/tree/0.1.0) - 2019-03-20
 
