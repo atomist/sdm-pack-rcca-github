@@ -25,9 +25,13 @@ import { SoftwareDeliveryMachine } from "@atomist/sdm";
 import * as _ from "lodash";
 import {
     IngestScmOrgs,
+    IngestScmRepos,
     OwnerType,
+    ReposByOrg,
     ScmProvider,
     ScmProviderStateName,
+    ScmRepoInput,
+    ScmReposInput,
     SetOwnerLogin,
     SetRepoLogin,
 } from "../typings/types";
@@ -182,18 +186,22 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
 
     // Finally retrieve all existing orgs and send them over for ingestion
     const readOrg = provider.credential.scopes.some(scope => scope === "read:org");
+    let orgIds: IngestScmOrgs.IngestScmOrgs[] = [];
+
+    const gh = gitHub(token, provider);
+
     if (readOrg) {
         logger.info(`Ingesting orgs`);
         const newOrgs = [];
 
-        const options = gitHub(token, provider).orgs.listForAuthenticatedUser.endpoint.merge({});
-        for await (const response of gitHub(token, provider).paginate.iterator(options)) {
+        const options = gh.orgs.listForAuthenticatedUser.endpoint.merge({});
+        for await (const response of gh.paginate.iterator(options)) {
             newOrgs.push(...response.data);
         }
 
-        const user = await gitHub(token, provider).users.getAuthenticated();
+        const user = await gh.users.getAuthenticated();
 
-        await graphClient.mutate<IngestScmOrgs.Mutation, IngestScmOrgs.Variables>({
+        orgIds = (await graphClient.mutate<IngestScmOrgs.Mutation, IngestScmOrgs.Variables>({
             name: "ingestScmOrgs",
             variables: {
                 scmProviderId: provider.id,
@@ -211,8 +219,61 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
                     }],
                 },
             },
-        });
+        })).ingestSCMOrgs;
     }
+
+    for (const orgId of orgIds) {
+        logger.info(`Ingesting repos for org '${orgId.owner}'`);
+
+        const existingRepos = (await graphClient.query<ReposByOrg.Query, ReposByOrg.Variables>({
+            name: "reposByOrg",
+            variables: {
+                owner: orgId.owner,
+                providerId: provider.providerId,
+            },
+        })).Repo;
+
+        let options;
+        if (orgId.ownerType === OwnerType.organization) {
+            options = gh.repos.listForOrg.endpoint.merge({ org: orgId.owner });
+        } else {
+            options = gh.repos.listForUser.endpoint.merge({ username: orgId.owner });
+        }
+        for await (const response of gh.paginate.iterator(options)) {
+            const newRepos = response.data.filter((r: any) => !existingRepos.some(er => er.name === r.name));
+
+            const scmIngest: ScmReposInput = {
+                orgId: orgId.id,
+                owner: orgId.owner,
+                repos: [],
+            };
+
+            for await (const newRepo of newRepos) {
+                logger.debug(`Preparing repo ${newRepo.full_name}`);
+
+                const ingest: ScmRepoInput = {
+                    name: newRepo.name,
+                    repoId: newRepo.id.toString(),
+                    url: newRepo.html_url,
+                    defaultBranch: newRepo.default_branch,
+                };
+
+                scmIngest.repos.push(ingest);
+            }
+
+            if (scmIngest.repos.length > 0) {
+                await graphClient.mutate<IngestScmRepos.Mutation, IngestScmRepos.Variables>({
+                    name: "ingestScmRepos",
+                    variables: {
+                        providerId: provider.id,
+                        repos: scmIngest,
+                    },
+                });
+            }
+        }
+    }
+
+    logger.info(`Ingesting orgs and repos finished`);
 
     await setProviderState(graphClient, provider, state, errors);
 
