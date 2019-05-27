@@ -41,10 +41,10 @@
     "@atomist/sdm-local": ">=1.0.5"
   },
   "devDependencies": {
-    "@atomist/automation-client": "1.5.0-master.20190525081042",
-    "@atomist/sdm": "1.5.0-master.20190526082545",
-    "@atomist/sdm-core": "1.5.0-master.20190525162949",
-    "@atomist/sdm-local": "1.0.7-master.20190507205218",
+    "@atomist/automation-client": "^1.5.0",
+    "@atomist/sdm": "^1.5.0",
+    "@atomist/sdm-core": "^1.5.0",
+    "@atomist/sdm-local": "^1.0.7",
     "@types/mocha": "^5.2.6",
     "@types/power-assert": "^1.5.0",
     "espower-typescript": "^9.0.2",

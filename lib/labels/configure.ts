@@ -18,7 +18,6 @@ import { MappedParameters } from "@atomist/automation-client";
 import {
     CommandHandlerRegistration,
     DeclarationType,
-    PreferenceScope,
     slackSuccessMessage,
     SoftwareDeliveryMachine,
 } from "@atomist/sdm";
@@ -46,7 +45,7 @@ export function configureDefaultPullRequestLabels(sdm: SoftwareDeliveryMachine):
         listener: async ci => {
             const labels = ci.parameters.labels.split(",").map(l => l.trim());
             const slug = `${ci.parameters.owner}/${ci.parameters.repo}`;
-            await ci.preferences.put(defaultPullRequestLabelsPreferenceKey(ci.parameters.owner, ci.parameters.repo), labels, PreferenceScope.Workspace);
+            await ci.preferences.put(defaultPullRequestLabelsPreferenceKey(ci.parameters.owner, ci.parameters.repo), labels);
             await ci.context.messageClient.respond(
                 slackSuccessMessage(
                     "Configure Default Labels",

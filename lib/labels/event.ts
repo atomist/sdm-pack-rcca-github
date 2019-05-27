@@ -16,7 +16,6 @@
 
 import { TokenCredentials } from "@atomist/automation-client";
 import {
-    PreferenceScope,
     PullRequestAction,
     PullRequestListener,
 } from "@atomist/sdm";
@@ -31,7 +30,6 @@ export function configureLabelsOnPullRequest(defaultLabels: string[] = []): Pull
         if (pli.pullRequest.action === PullRequestAction.created || pli.pullRequest.action === PullRequestAction.opened) {
             const labels = await pli.preferences.get<string[]>(
                 defaultPullRequestLabelsPreferenceKey(pli.pullRequest.repo.owner, pli.pullRequest.repo.name),
-                PreferenceScope.Workspace,
                 { defaultValue: defaultLabels });
             if (!!labels && labels.length > 0) {
                 const api = gitHub((pli.credentials as TokenCredentials).token, pli.pullRequest.repo.org.provider.apiUrl);

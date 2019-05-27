@@ -23,6 +23,7 @@ import {
     Success,
     TokenCredentials,
 } from "@atomist/automation-client";
+import { DefaultRetryOptions } from "@atomist/automation-client/lib/util/retry";
 import {
     DeclarationType,
     ExtensionPack,
@@ -133,7 +134,7 @@ export async function executeAutoMerge(pr: AutoMergeOnReview.PullRequest,
                     }
 
                 },
-                "Auto merging GitHub PR");
+                "Auto merging GitHub PR", { ...DefaultRetryOptions, log: false });
         }
     }
     return Success;
