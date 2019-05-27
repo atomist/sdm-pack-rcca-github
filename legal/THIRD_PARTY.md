@@ -24,9 +24,9 @@ This page details all runtime OSS dependencies of `@atomist/sdm-pack-rcca-github
 |[Custom: https://flowtype.org/](#custom-httpsflowtypeorg)|1|
 |[Custom: https://github.com/graphql/graphql-language-service](#custom-httpsgithubcomgraphqlgraphql-language-service)|2|
 |[GPL-3.0](#gpl-30)|3|
-|[ISC](#isc)|80|
+|[ISC](#isc)|81|
 |[MIT AND BSD-3-Clause](#mit-and-bsd-3-clause)|1|
-|[MIT](#mit)|874|
+|[MIT](#mit)|877|
 |[Unlicense](#unlicense)|1|
 |[WTFPL](#wtfpl)|2|
 
@@ -41,9 +41,9 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
-|`@atomist/sdm-core`|`1.5.0-master.20190525162949`|Atomist|[https://github.com/atomist/sdm-core](https://github.com/atomist/sdm-core)|
-|`@atomist/sdm-local`|`1.0.7-master.20190507205218`|Atomist|[https://github.com/atomist/sdm-local](https://github.com/atomist/sdm-local)|
-|`@atomist/sdm`|`1.5.0-master.20190526082545`|Atomist|[https://github.com/atomist/sdm](https://github.com/atomist/sdm)|
+|`@atomist/sdm-core`|`1.5.0`|Atomist|[https://github.com/atomist/sdm-core](https://github.com/atomist/sdm-core)|
+|`@atomist/sdm-local`|`1.0.7`|Atomist|[https://github.com/atomist/sdm-local](https://github.com/atomist/sdm-local)|
+|`@atomist/sdm`|`1.5.0`|Atomist|[https://github.com/atomist/sdm](https://github.com/atomist/sdm)|
 |`@atomist/slack-messages`|`1.1.0`|Atomist|[https://github.com/atomist/slack-messages](https://github.com/atomist/slack-messages)|
 |`@kubernetes/client-node`|`0.8.2`|Kubernetes Authors|[https://github.com/kubernetes-client/javascript](https://github.com/kubernetes-client/javascript)|
 |`atob`|`2.1.2`|AJ ONeal|[git://git.coolaj86.com/coolaj86/atob.js](git://git.coolaj86.com/coolaj86/atob.js)|
@@ -179,7 +179,7 @@ GNU General Public License v3.0 only - [http://www.gnu.org/licenses/gpl-3.0-stan
 
 | Name | Version | Publisher | Repository |
 |------|---------|-----------|------------|
-|`@atomist/automation-client`|`1.5.0-master.20190525081042`|Atomist|[https://github.com/atomist/automation-client](https://github.com/atomist/automation-client)|
+|`@atomist/automation-client`|`1.5.0`|Atomist|[https://github.com/atomist/automation-client](https://github.com/atomist/automation-client)|
 |`@atomist/microgrammar`|`1.2.0`|Atomist|[https://github.com/atomist/microgrammar](https://github.com/atomist/microgrammar)|
 |`@atomist/tree-path`|`1.0.3`|Atomist|[https://github.com/atomist/tree-path](https://github.com/atomist/tree-path)|
 
@@ -247,6 +247,7 @@ ISC License - [https://www.isc.org/downloads/software-support-policy/isc-license
 |`rimraf`|`2.6.3`|Isaac Z. Schlueter|[https://github.com/isaacs/rimraf](https://github.com/isaacs/rimraf)|
 |`sax`|`1.2.4`|Isaac Z. Schlueter|[https://github.com/isaacs/sax-js](https://github.com/isaacs/sax-js)|
 |`semver`|`5.7.0`||[https://github.com/npm/node-semver](https://github.com/npm/node-semver)|
+|`semver`|`6.1.0`||[https://github.com/npm/node-semver](https://github.com/npm/node-semver)|
 |`set-blocking`|`2.0.0`|Ben Coe|[https://github.com/yargs/set-blocking](https://github.com/yargs/set-blocking)|
 |`setprototypeof`|`1.1.1`|Wes Todd|[https://github.com/wesleytodd/setprototypeof](https://github.com/wesleytodd/setprototypeof)|
 |`signal-exit`|`3.0.2`|Ben Coe|[https://github.com/tapjs/signal-exit](https://github.com/tapjs/signal-exit)|
@@ -320,7 +321,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`@types/empower`|`1.2.30`|vvakame|[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/events`|`3.0.0`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/express-handlebars`|`0.0.30`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
-|`@types/express-serve-static-core`|`4.16.5`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
+|`@types/express-serve-static-core`|`4.16.6`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/express`|`4.16.1`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/find-up`|`2.1.1`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/form-data`|`2.2.1`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
@@ -328,7 +329,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`@types/fs-extra`|`7.0.0`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/glob`|`7.1.1`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/graphql`|`14.2.0`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
-|`@types/helmet`|`0.0.42`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
+|`@types/helmet`|`0.0.43`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/inquirer`|`0.0.43`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/inquirer`|`0.0.44`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/is-glob`|`4.0.0`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
@@ -369,7 +370,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`@types/rx-lite-virtualtime`|`4.0.3`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/rx-lite`|`4.0.6`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/rx`|`4.1.1`|Carl de Billy|[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
-|`@types/semver`|`5.5.0`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
+|`@types/semver`|`6.0.0`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/serialize-error`|`2.1.0`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/serve-static`|`1.13.2`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/shelljs`|`0.8.5`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
@@ -528,7 +529,8 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`copy-descriptor`|`0.1.1`|Jon Schlinkert|[https://github.com/jonschlinkert/copy-descriptor](https://github.com/jonschlinkert/copy-descriptor)|
 |`copyfiles`|`2.1.0`||[https://github.com/calvinmetcalf/copyfiles](https://github.com/calvinmetcalf/copyfiles)|
 |`core-js`|`2.6.8`||[https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)|
-|`core-js`|`3.1.2`||[https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)|
+|`core-js`|`2.6.9`||[https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)|
+|`core-js`|`3.1.3`||[https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)|
 |`core-util-is`|`1.0.2`|Isaac Z. Schlueter|[https://github.com/isaacs/core-util-is](https://github.com/isaacs/core-util-is)|
 |`cors`|`2.8.5`|Troy Goode|[https://github.com/expressjs/cors](https://github.com/expressjs/cors)|
 |`cosmiconfig`|`5.2.1`|David Clark|[https://github.com/davidtheclark/cosmiconfig](https://github.com/davidtheclark/cosmiconfig)|
@@ -604,7 +606,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`expand-brackets`|`2.1.4`|Jon Schlinkert|[https://github.com/jonschlinkert/expand-brackets](https://github.com/jonschlinkert/expand-brackets)|
 |`expect-ct`|`0.2.0`|Evan Hahn|[https://github.com/helmetjs/expect-ct](https://github.com/helmetjs/expect-ct)|
 |`express-session`|`1.16.1`|TJ Holowaychuk|[https://github.com/expressjs/session](https://github.com/expressjs/session)|
-|`express`|`4.17.0`|TJ Holowaychuk|[https://github.com/expressjs/express](https://github.com/expressjs/express)|
+|`express`|`4.17.1`|TJ Holowaychuk|[https://github.com/expressjs/express](https://github.com/expressjs/express)|
 |`extend-shallow`|`2.0.1`|Jon Schlinkert|[https://github.com/jonschlinkert/extend-shallow](https://github.com/jonschlinkert/extend-shallow)|
 |`extend-shallow`|`3.0.2`|Jon Schlinkert|[https://github.com/jonschlinkert/extend-shallow](https://github.com/jonschlinkert/extend-shallow)|
 |`extend`|`3.0.2`|Stefan Thomas|[https://github.com/justmoon/node-extend](https://github.com/justmoon/node-extend)|
@@ -1074,6 +1076,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`timed-out`|`4.0.1`|Vsevolod Strukchinsky|[https://github.com/floatdrop/timed-out](https://github.com/floatdrop/timed-out)|
 |`title-case`|`2.1.1`|Blake Embrey|[https://github.com/blakeembrey/title-case](https://github.com/blakeembrey/title-case)|
 |`tmp-promise`|`1.1.0`|Benjamin Gruenbaum and collaborators.|[https://github.com/benjamingr/tmp-promise](https://github.com/benjamingr/tmp-promise)|
+|`tmp-promise`|`2.0.1`|Benjamin Gruenbaum and collaborators.|[https://github.com/benjamingr/tmp-promise](https://github.com/benjamingr/tmp-promise)|
 |`tmp`|`0.0.33`|KARASZI István|[https://github.com/raszi/node-tmp](https://github.com/raszi/node-tmp)|
 |`tmp`|`0.1.0`|KARASZI István|[https://github.com/raszi/node-tmp](https://github.com/raszi/node-tmp)|
 |`to-absolute-glob`|`2.0.2`|Jon Schlinkert|[https://github.com/jonschlinkert/to-absolute-glob](https://github.com/jonschlinkert/to-absolute-glob)|
@@ -1141,6 +1144,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`wrap-ansi`|`4.0.0`|Sindre Sorhus|[https://github.com/chalk/wrap-ansi](https://github.com/chalk/wrap-ansi)|
 |`wrap-ansi`|`5.1.0`|Sindre Sorhus|[https://github.com/chalk/wrap-ansi](https://github.com/chalk/wrap-ansi)|
 |`ws`|`6.2.1`|Einar Otto Stangvik|[https://github.com/websockets/ws](https://github.com/websockets/ws)|
+|`ws`|`7.0.0`|Einar Otto Stangvik|[https://github.com/websockets/ws](https://github.com/websockets/ws)|
 |`x-xss-protection`|`1.1.0`|Adam Baldwin|[https://github.com/helmetjs/x-xss-protection](https://github.com/helmetjs/x-xss-protection)|
 |`xtend`|`4.0.1`|Raynos|[https://github.com/Raynos/xtend](https://github.com/Raynos/xtend)|
 |`yargs`|`11.1.0`||[https://github.com/yargs/yargs](https://github.com/yargs/yargs)|
