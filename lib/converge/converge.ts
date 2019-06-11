@@ -32,8 +32,6 @@ import {
     ScmProviderStateName,
     ScmRepoInput,
     ScmReposInput,
-    SetOwnerLogin,
-    SetRepoLogin,
 } from "../typings/types";
 import {
     deleteWebhook,
@@ -184,6 +182,8 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
         await deleteWebhook(graphClient, webhookToDelete);
     }
 
+    await setProviderState(graphClient, provider, state, errors);
+
     // Finally retrieve all existing orgs and send them over for ingestion
     const readOrg = provider.credential.scopes.some(scope => scope === "read:org");
     let orgIds: IngestScmOrgs.IngestScmOrgs[] = [];
@@ -275,8 +275,6 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
 
     logger.info(`Ingesting orgs and repos finished`);
 
-    await setProviderState(graphClient, provider, state, errors);
-
     return Success;
 }
 
@@ -335,16 +333,6 @@ export async function convergeOrg(org: string,
     if (createWebbook) {
         await createOrgWebhook(org, provider, token, graphClient);
     }
-
-    // Link up org and owner
-    await graphClient.mutate<SetOwnerLogin.Mutation, SetOwnerLogin.Variables>({
-        name: "SetOwnerLogin",
-        variables: {
-            providerId: provider.providerId,
-            owner: org,
-            login: provider.credential.owner.person.scmId.login,
-        },
-    });
 }
 
 /**
@@ -413,17 +401,6 @@ export async function convergeRepo(owner: string,
     if (createWebbook) {
         await createRepoWebhook(owner, repo, provider, token, graphClient);
     }
-
-    // Link up repo and owner
-    await graphClient.mutate<SetRepoLogin.Mutation, SetRepoLogin.Variables>({
-        name: "SetRepoLogin",
-        variables: {
-            providerId: provider.providerId,
-            owner,
-            repo,
-            login: provider.credential.owner.person.scmId.login,
-        },
-    });
 }
 
 // tslint:enable:cyclomatic-complexity
