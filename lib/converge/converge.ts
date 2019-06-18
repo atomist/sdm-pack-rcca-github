@@ -182,15 +182,13 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
         await deleteWebhook(graphClient, webhookToDelete);
     }
 
-    await setProviderState(graphClient, provider, state, errors);
-
     // Finally retrieve all existing orgs and send them over for ingestion
     const readOrg = provider.credential.scopes.some(scope => scope === "read:org");
     let orgIds: IngestScmOrgs.IngestScmOrgs[] = [];
 
     const gh = gitHub(token, provider);
 
-    if (readOrg) {
+    if (!!readOrg) {
         logger.info(`Ingesting orgs`);
         const newOrgs = [];
 
@@ -212,6 +210,25 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
                         ownerType: OwnerType.organization,
                         id: org.id.toString(),
                     })), {
+                        name: user.data.login,
+                        url: user.data.html_url,
+                        ownerType: OwnerType.user,
+                        id: user.data.id.toString(),
+                    }],
+                },
+            },
+        })).ingestSCMOrgs;
+    } else {
+
+        // If we didn't get read:org scope, only ingest the user org
+        const user = await gh.users.getAuthenticated();
+
+        orgIds = (await graphClient.mutate<IngestScmOrgs.Mutation, IngestScmOrgs.Variables>({
+            name: "ingestScmOrgs",
+            variables: {
+                scmProviderId: provider.id,
+                scmOrgsInput: {
+                    orgs: [{
                         name: user.data.login,
                         url: user.data.html_url,
                         ownerType: OwnerType.user,
@@ -274,6 +291,8 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
     }
 
     logger.info(`Ingesting orgs and repos finished`);
+
+    await setProviderState(graphClient, provider, state, errors);
 
     return Success;
 }
