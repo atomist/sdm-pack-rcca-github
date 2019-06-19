@@ -30,6 +30,7 @@ import {
     convergeProvider,
     convergeWorkspace,
 } from "./converge";
+import { IngestOrg } from "./IngestOrg";
 import { onRepoProvenance } from "./repo";
 
 /**
@@ -97,6 +98,8 @@ export function githubConvergeSupport(options: ConvergenceOptions = {}): Extensi
 
             sdm.addEvent(onScmProvider(optsToUse));
             sdm.addEvent(onChannelLinked(sdm));
+
+            sdm.addCommand(IngestOrg);
         },
     };
 }
@@ -116,7 +119,7 @@ function onScmProvider(options: ConvergenceOptions): EventHandlerRegistration<On
         description: "Converge on GitHub ScmProvider events",
         listener: async (e, ctx) => {
             const providers = e.data;
-            return convergeProvider(providers.SCMProvider[0], ctx.graphClient);
+            return convergeProvider(providers.SCMProvider[0], ctx.workspaceId, ctx.graphClient);
         },
     };
 }

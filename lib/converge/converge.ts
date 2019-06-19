@@ -22,16 +22,11 @@ import {
     Success,
 } from "@atomist/automation-client";
 import { SoftwareDeliveryMachine } from "@atomist/sdm";
+import { createJob } from "@atomist/sdm-core";
 import * as _ from "lodash";
 import {
-    IngestScmOrgs,
-    IngestScmRepos,
-    OwnerType,
-    ReposByOrg,
     ScmProvider,
     ScmProviderStateName,
-    ScmRepoInput,
-    ScmReposInput,
 } from "../typings/types";
 import {
     deleteWebhook,
@@ -46,6 +41,10 @@ import {
     isAuthError,
     printError,
 } from "./github";
+import {
+    IngestOrg,
+    IngestOrgParameters,
+} from "./IngestOrg";
 
 /**
  * Start the convergence for an entire workspace
@@ -66,7 +65,7 @@ export async function convergeWorkspace(workspaceId: string,
 
     if (providers && providers.SCMProvider && providers.SCMProvider.length > 0) {
         const provider = providers.SCMProvider[0];
-        await convergeProvider(provider, graphClient);
+        await convergeProvider(provider, workspaceId, graphClient);
     }
 }
 
@@ -77,6 +76,7 @@ export async function convergeWorkspace(workspaceId: string,
  */
 // tslint:disable:cyclomatic-complexity
 export async function convergeProvider(provider: ScmProvider.ScmProvider,
+                                       workspaceId: string,
                                        graphClient: GraphClient): Promise<HandlerResult> {
 
     // Only deal with auth'ed providers
@@ -182,117 +182,28 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
         await deleteWebhook(graphClient, webhookToDelete);
     }
 
-    // Finally retrieve all existing orgs and send them over for ingestion
-    const readOrg = provider.credential.scopes.some(scope => scope === "read:org");
-    let orgIds: IngestScmOrgs.IngestScmOrgs[] = [];
+    if (!state || state === ScmProviderStateName.converged) {
 
-    const gh = gitHub(token, provider);
-
-    if (!!readOrg) {
-        logger.info(`Ingesting orgs`);
-        const newOrgs = [];
-
-        const options = gh.orgs.listForAuthenticatedUser.endpoint.merge({});
-        for await (const response of gh.paginate.iterator(options)) {
-            newOrgs.push(...response.data);
-        }
-
-        const user = await gh.users.getAuthenticated();
-
-        orgIds = (await graphClient.mutate<IngestScmOrgs.Mutation, IngestScmOrgs.Variables>({
-            name: "ingestScmOrgs",
-            variables: {
-                scmProviderId: provider.id,
-                scmOrgsInput: {
-                    orgs: [...newOrgs.map(org => ({
-                        name: org.login,
-                        url: org.url,
-                        ownerType: OwnerType.organization,
-                        id: org.id.toString(),
-                    })), {
-                        name: user.data.login,
-                        url: user.data.html_url,
-                        ownerType: OwnerType.user,
-                        id: user.data.id.toString(),
-                    }],
+        // Finally retrieve all existing orgs and send them over for ingestion
+        const readOrg = provider.credential.scopes.some(scope => scope === "read:org");
+        await createJob<IngestOrgParameters>(
+            "Discovering repositories",
+            [{
+                name: IngestOrg.name,
+                parameters: {
+                    id: provider.id,
+                    providerId: provider.providerId,
+                    apiUrl: provider.apiUrl,
+                    readOrg,
+                    token,
                 },
-            },
-        })).ingestSCMOrgs;
-    } else {
-
-        // If we didn't get read:org scope, only ingest the user org
-        const user = await gh.users.getAuthenticated();
-
-        orgIds = (await graphClient.mutate<IngestScmOrgs.Mutation, IngestScmOrgs.Variables>({
-            name: "ingestScmOrgs",
-            variables: {
-                scmProviderId: provider.id,
-                scmOrgsInput: {
-                    orgs: [{
-                        name: user.data.login,
-                        url: user.data.html_url,
-                        ownerType: OwnerType.user,
-                        id: user.data.id.toString(),
-                    }],
-                },
-            },
-        })).ingestSCMOrgs;
+            }],
+            { graphClient } as any);
     }
-
-    for (const orgId of orgIds) {
-        logger.info(`Ingesting repos for org '${orgId.owner}'`);
-
-        const existingRepos = (await graphClient.query<ReposByOrg.Query, ReposByOrg.Variables>({
-            name: "reposByOrg",
-            variables: {
-                owner: orgId.owner,
-                providerId: provider.providerId,
-            },
-        })).Repo;
-
-        let options;
-        if (orgId.ownerType === OwnerType.organization) {
-            options = gh.repos.listForOrg.endpoint.merge({ org: orgId.owner });
-        } else {
-            options = gh.repos.listForUser.endpoint.merge({ username: orgId.owner });
-        }
-        for await (const response of gh.paginate.iterator(options)) {
-            const newRepos = response.data.filter((r: any) => !existingRepos.some(er => er.name === r.name));
-
-            const scmIngest: ScmReposInput = {
-                orgId: orgId.id,
-                owner: orgId.owner,
-                repos: [],
-            };
-
-            for await (const newRepo of newRepos) {
-                logger.debug(`Preparing repo ${newRepo.full_name}`);
-
-                const ingest: ScmRepoInput = {
-                    name: newRepo.name,
-                    repoId: newRepo.id.toString(),
-                    url: newRepo.html_url,
-                    defaultBranch: newRepo.default_branch,
-                };
-
-                scmIngest.repos.push(ingest);
-            }
-
-            if (scmIngest.repos.length > 0) {
-                await graphClient.mutate<IngestScmRepos.Mutation, IngestScmRepos.Variables>({
-                    name: "ingestScmRepos",
-                    variables: {
-                        providerId: provider.id,
-                        repos: scmIngest,
-                    },
-                });
-            }
-        }
-    }
-
-    logger.info(`Ingesting orgs and repos finished`);
 
     await setProviderState(graphClient, provider, state, errors);
+
+    logger.info("Completed RCCA convergence for provider");
 
     return Success;
 }
