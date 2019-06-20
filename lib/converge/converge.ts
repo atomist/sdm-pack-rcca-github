@@ -185,19 +185,16 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
     if (!state || state === ScmProviderStateName.converged) {
 
         // Finally retrieve all existing orgs and send them over for ingestion
-        const readOrg = provider.credential.scopes.some(scope => scope === "read:org");
-        await createJob<IngestOrgParameters>(
-            "Discovering repositories",
-            [{
-                name: IngestOrg.name,
+        await createJob<IngestOrgParameters>({
+                name: "RepositoryDiscovery",
+                description: "Discovering repositories",
+                command: IngestOrg,
                 parameters: {
                     id: provider.id,
                     providerId: provider.providerId,
                     apiUrl: provider.apiUrl,
-                    readOrg,
-                    token,
                 },
-            }],
+            },
             { graphClient } as any);
     }
 

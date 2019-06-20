@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Copyright © 2019 Atomist, Inc.
  *
@@ -14,14 +15,8 @@
  * limitations under the License.
  */
 
-import {
-    logger,
-    Secrets,
-} from "@atomist/automation-client";
-import {
-    CommandHandlerRegistration,
-    DeclarationType,
-} from "@atomist/sdm";
+import { logger } from "@atomist/automation-client";
+import { CommandHandlerRegistration } from "@atomist/sdm";
 import {
     IngestScmOrgs,
     IngestScmRepos,
@@ -30,10 +25,11 @@ import {
     ScmRepoInput,
     ScmReposInput,
 } from "../typings/types";
+import { loadProvider } from "./api";
 import { gitHub } from "./github";
 
 // tslint:disable-next-line:interface-over-type-literal
-export type IngestOrgParameters = { id: string, providerId: string, apiUrl: string, readOrg: boolean, token: string };
+export type IngestOrgParameters = { id: string, providerId: string, apiUrl: string };
 
 export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
     name: "IngestOrg",
@@ -43,14 +39,19 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
         id: { description: "Internal id of the provider" },
         providerId: { description: "Id of the provider" },
         apiUrl: { description: "URL of the api endpoint" },
-        readOrg: { description: "True if the token has read:org scope", type: "boolean" },
-        token: { uri: Secrets.userToken(["repo"]), declarationType: DeclarationType.Secret },
     },
     listener: async ci => {
-        const gh = gitHub(ci.parameters.token, ci.parameters.apiUrl);
+
+        const provider = await loadProvider(ci.context.graphClient, ci.parameters.id);
+        if (!provider.credential || !provider.credential || !provider.credential.secret) {
+            return;
+        }
+
+        const gh = gitHub(provider.credential.secret, ci.parameters.apiUrl);
         let orgIds: IngestScmOrgs.IngestScmOrgs[] = [];
 
-        if (!!ci.parameters.readOrg) {
+        const readOrg = provider.credential.scopes.some(scope => scope === "read:org");
+        if (!!readOrg) {
             logger.info(`Ingesting orgs`);
             const newOrgs = [];
 
