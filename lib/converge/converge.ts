@@ -25,6 +25,8 @@ import { SoftwareDeliveryMachine } from "@atomist/sdm";
 import { createJob } from "@atomist/sdm-core";
 import * as _ from "lodash";
 import {
+    AtmJobState,
+    JobByName,
     ScmProvider,
     ScmProviderStateName,
 } from "../typings/types";
@@ -184,18 +186,30 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
 
     if (!state || state === ScmProviderStateName.converged) {
 
-        // Finally retrieve all existing orgs and send them over for ingestion
-        await createJob<IngestOrgParameters>({
+        const jobs = await graphClient.query<JobByName.Query, JobByName.Variables>({
+            name: "JobByName",
+            variables: {
                 name: "RepositoryDiscovery",
-                description: "Discovering repositories",
-                command: IngestOrg,
-                parameters: {
-                    id: provider.id,
-                    providerId: provider.providerId,
-                    apiUrl: provider.apiUrl,
-                },
             },
-            { graphClient } as any);
+            options: QueryNoCacheOptions,
+        });
+
+        if (!jobs.AtmJob.some(j => j.state === AtmJobState.running)) {
+            // Finally retrieve all existing orgs and send them over for ingestion
+            await createJob<IngestOrgParameters>({
+                    name: "RepositoryDiscovery",
+                    description: "Discovering repositories",
+                    command: IngestOrg,
+                    parameters: {
+                        id: provider.id,
+                        providerId: provider.providerId,
+                        apiUrl: provider.apiUrl,
+                    },
+                },
+                { graphClient } as any);
+        } else {
+            logger.info("Not creating repository discovery job as one is already running");
+        }
     }
 
     await setProviderState(graphClient, provider, state, errors);

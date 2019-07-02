@@ -1,0 +1,5 @@
+query JobByName($name: String!) {
+    AtmJob(name: $name) {
+        state
+    }
+}
