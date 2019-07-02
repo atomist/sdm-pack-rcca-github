@@ -21,8 +21,10 @@ import {
     QueryNoCacheOptions,
     Success,
 } from "@atomist/automation-client";
-import { SoftwareDeliveryMachine } from "@atomist/sdm";
-import { createJob } from "@atomist/sdm-core";
+import {
+    createJob,
+    SoftwareDeliveryMachine,
+} from "@atomist/sdm";
 import * as _ from "lodash";
 import {
     AtmJobState,
