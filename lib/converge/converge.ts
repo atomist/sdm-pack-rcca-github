@@ -196,7 +196,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
             options: QueryNoCacheOptions,
         });
 
-        if (!jobs.AtmJob.some(j => j.state === AtmJobState.running)) {
+        if (!(jobs.AtmJob || []).some(j => j.state === AtmJobState.running)) {
             // Finally retrieve all existing orgs and send them over for ingestion
             await createJob<IngestOrgParameters>({
                     name,
