@@ -119,7 +119,7 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
                 options = gh.repos.listForUser.endpoint.merge({ username: orgId.owner, per_page: 100 });
             }
             for await (const response of gh.paginate.iterator(options)) {
-                const newRepos = response.data.filter((r: any) => !existingRepos.some(er => er.name === r.name));
+                const newRepos = response.data.filter((r: any) => !r.archived).filter((r: any) => !existingRepos.some(er => er.name === r.name));
 
                 const scmIngest: ScmReposInput = {
                     orgId: orgId.id,
