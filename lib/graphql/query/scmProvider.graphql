@@ -23,6 +23,7 @@ query ScmProvider($type: ProviderType!) {
             scopes
             secret
             owner {
+                login
                 person {
                     scmId {
                         login

@@ -187,11 +187,11 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
     }
 
     if (!state || state === ScmProviderStateName.converged) {
-
+        const name = `RepositoryDiscovery/${provider.providerId}/${provider.credential.owner.login}`;
         const jobs = await graphClient.query<JobByName.Query, JobByName.Variables>({
             name: "JobByName",
             variables: {
-                name: "RepositoryDiscovery",
+                name,
             },
             options: QueryNoCacheOptions,
         });
@@ -199,7 +199,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
         if (!jobs.AtmJob.some(j => j.state === AtmJobState.running)) {
             // Finally retrieve all existing orgs and send them over for ingestion
             await createJob<IngestOrgParameters>({
-                    name: "RepositoryDiscovery",
+                    name,
                     description: "Discovering repositories",
                     command: IngestOrg,
                     parameters: {
