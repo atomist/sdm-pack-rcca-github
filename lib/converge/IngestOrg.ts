@@ -114,9 +114,9 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
 
             let options;
             if (orgId.ownerType === OwnerType.organization) {
-                options = gh.repos.listForOrg.endpoint.merge({ org: orgId.owner });
+                options = gh.repos.listForOrg.endpoint.merge({ org: orgId.owner, per_page: 100 });
             } else {
-                options = gh.repos.listForUser.endpoint.merge({ username: orgId.owner });
+                options = gh.repos.listForUser.endpoint.merge({ username: orgId.owner, per_page: 100 });
             }
             for await (const response of gh.paginate.iterator(options)) {
                 const newRepos = response.data.filter((r: any) => !existingRepos.some(er => er.name === r.name));
