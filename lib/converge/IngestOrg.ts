@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
+import {
+    executeAll,
+    logger,
+} from "@atomist/automation-client";
 import { CommandHandlerRegistration } from "@atomist/sdm";
 import {
     IngestScmOrgs,
@@ -101,56 +104,60 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
             })).ingestSCMOrgs;
         }
 
-        for (const orgId of orgIds) {
-            logger.info(`Ingesting repos for org '${orgId.owner}'`);
+        await executeAll(orgIds.map(orgId =>
+            async () => {
+                logger.info(`Ingesting repos for org '${orgId.owner}'`);
 
-            const existingRepos = (await ci.context.graphClient.query<ReposByOrg.Query, ReposByOrg.Variables>({
-                name: "reposByOrg",
-                variables: {
-                    owner: orgId.owner,
-                    providerId: ci.parameters.providerId,
-                },
-            })).Repo;
+                const existingRepos = (await ci.context.graphClient.query<ReposByOrg.Query, ReposByOrg.Variables>({
+                    name: "reposByOrg",
+                    variables: {
+                        owner: orgId.owner,
+                        providerId: ci.parameters.providerId,
+                    },
+                })).Repo;
 
-            let options;
-            if (orgId.ownerType === OwnerType.organization) {
-                options = gh.repos.listForOrg.endpoint.merge({ org: orgId.owner, per_page: 100 });
-            } else {
-                options = gh.repos.listForUser.endpoint.merge({ username: orgId.owner, per_page: 100 });
-            }
-            for await (const response of gh.paginate.iterator(options)) {
-                const newRepos = response.data.filter((r: any) => !r.archived).filter((r: any) => !existingRepos.some(er => er.name === r.name));
+                let options;
+                if (orgId.ownerType === OwnerType.organization) {
+                    options = gh.repos.listForOrg.endpoint.merge({ org: orgId.owner, per_page: 100 });
+                } else {
+                    options = gh.repos.listForUser.endpoint.merge({ username: orgId.owner, per_page: 100 });
+                }
+                for await (const response of gh.paginate.iterator(options)) {
+                    const newRepos = response.data.filter((r: any) => !r.archived).filter((r: any) => !existingRepos.some(er => er.name === r.name));
 
-                const scmIngest: ScmReposInput = {
-                    orgId: orgId.id,
-                    owner: orgId.owner,
-                    repos: [],
-                };
-
-                for await (const newRepo of newRepos) {
-                    logger.debug(`Preparing repo ${newRepo.full_name}`);
-
-                    const ingest: ScmRepoInput = {
-                        name: newRepo.name,
-                        repoId: newRepo.id.toString(),
-                        url: newRepo.html_url,
-                        defaultBranch: newRepo.default_branch,
+                    const scmIngest: ScmReposInput = {
+                        orgId: orgId.id,
+                        owner: orgId.owner,
+                        repos: [],
                     };
 
-                    scmIngest.repos.push(ingest);
+                    for await (const newRepo of newRepos) {
+                        logger.debug(`Preparing repo ${newRepo.full_name}`);
+
+                        const ingest: ScmRepoInput = {
+                            name: newRepo.name,
+                            repoId: newRepo.id.toString(),
+                            url: newRepo.html_url,
+                            defaultBranch: newRepo.default_branch,
+                        };
+
+                        scmIngest.repos.push(ingest);
+                    }
+
+                    if (scmIngest.repos.length > 0) {
+                        await ci.context.graphClient.mutate<IngestScmRepos.Mutation, IngestScmRepos.Variables>({
+                            name: "ingestScmRepos",
+                            variables: {
+                                providerId: ci.parameters.id,
+                                repos: scmIngest,
+                            },
+                        });
+                    }
                 }
 
-                if (scmIngest.repos.length > 0) {
-                    await ci.context.graphClient.mutate<IngestScmRepos.Mutation, IngestScmRepos.Variables>({
-                        name: "ingestScmRepos",
-                        variables: {
-                            providerId: ci.parameters.id,
-                            repos: scmIngest,
-                        },
-                    });
-                }
-            }
-        }
+                logger.info(`Ingesting repos for org '${orgId.owner}' completed`);
+            },
+        ));
 
         logger.info(`Ingesting orgs and repos finished`);
     },
