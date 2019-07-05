@@ -19,6 +19,7 @@ import {
     logger,
 } from "@atomist/automation-client";
 import { CommandHandlerRegistration } from "@atomist/sdm";
+import * as _ from "lodash";
 import {
     IngestScmOrgs,
     IngestScmRepos,
@@ -104,7 +105,7 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
             })).ingestSCMOrgs;
         }
 
-        await executeAll(orgIds.map(orgId =>
+        const counts = await executeAll<{ org: string, repos: number }>(orgIds.map(orgId =>
             async () => {
                 logger.info(`Ingesting repos for org '${orgId.owner}'`);
 
@@ -122,6 +123,8 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
                 } else {
                     options = gh.repos.listForUser.endpoint.merge({ username: orgId.owner, per_page: 100 });
                 }
+
+                let repos = 0;
                 for await (const response of gh.paginate.iterator(options)) {
                     const newRepos = response.data.filter((r: any) => !r.archived).filter((r: any) => !existingRepos.some(er => er.name === r.name));
 
@@ -142,6 +145,7 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
                         };
 
                         scmIngest.repos.push(ingest);
+                        repos++;
                     }
 
                     if (scmIngest.repos.length > 0) {
@@ -156,9 +160,12 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
                 }
 
                 logger.info(`Ingesting repos for org '${orgId.owner}' completed`);
+
+                return { org: orgId.owner, repos };
             },
         ));
 
-        logger.info(`Ingesting orgs and repos finished`);
+        logger.info(`Ingesting orgs and repos finished. Total ${_.sumBy(counts, "repos")} repos (${
+            counts.map(c => `${c.org} (${c.repos} repos)`).join(", ")})`);
     },
 };
