@@ -24,6 +24,9 @@ import {
     AddWebhookTag,
     CreateWebhook,
     DeleteWebhook,
+    GitHubAppInstallationInput,
+    OnGibHubAppScmId,
+    SaveGitHubAppUserInstallations,
     ScmProvider,
     ScmProviderById,
     ScmProviderStateName,
@@ -107,4 +110,20 @@ export async function loadProvider(graphClient: GraphClient,
         },
         options: QueryNoCacheOptions,
     })).SCMProvider[0];
+}
+
+export async function saveGitHubAppUserInstallations(
+    graphClient: GraphClient,
+    scmId: OnGibHubAppScmId.ScmId,
+    installations: GitHubAppInstallationInput[]):
+    Promise<SaveGitHubAppUserInstallations.SaveGitHubAppUserInstallations> {
+        return (await graphClient.mutate<SaveGitHubAppUserInstallations.Mutation, SaveGitHubAppUserInstallations.Variables>({
+            name: "SaveGitHubAppUserInstallations",
+            variables: {
+                installations,
+                pid: scmId.provider.id,
+                userId: scmId.id,
+            },
+            options: QueryNoCacheOptions,
+        })).saveGitHubAppUserInstallations[0];
 }
