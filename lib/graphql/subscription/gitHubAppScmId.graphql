@@ -1,0 +1,15 @@
+subscription OnGibHubAppScmId {
+  SCMId {
+    id
+    login @required
+    credential {
+      secret @required
+    }
+    provider {
+        apiUrl
+        providerType @matches(re: "github_com_app")
+        id
+        name
+    }
+  }
+}
