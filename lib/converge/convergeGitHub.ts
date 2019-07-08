@@ -22,11 +22,13 @@ import {
 } from "@atomist/sdm";
 import * as _ from "lodash";
 import {
+    OnGibHubAppScmId,
     OnScmProvider,
     ProviderType,
 } from "../typings/types";
 import { onChannelLinked } from "./channelLink";
 import {
+    convergeGitHubAppUserInstallations,
     convergeProvider,
     convergeWorkspace,
 } from "./converge";
@@ -76,6 +78,7 @@ export function githubConvergeSupport(options: ConvergenceOptions = {}): Extensi
                 ...options,
             };
 
+            // this short-cuts if there is no auth yet (always true for github apps)
             const converge = async (l: any) => {
                 for (const workspaceId of sdm.configuration.workspaceIds) {
                     await convergeWorkspace(workspaceId, sdm, optsToUse);
@@ -91,15 +94,19 @@ export function githubConvergeSupport(options: ConvergenceOptions = {}): Extensi
                 });
                 sdm.addStartupListener(converge);
             }
-
+            // this will short cut for github apps because there's no targetConfiguration
             if (_.get(optsToUse, "events.repoGenerated") === true) {
                 sdm.addEvent(onRepoProvenance(sdm));
             }
-
+            // this short-cuts if there is no auth yet (always true for github apps)
             sdm.addEvent(onScmProvider(optsToUse));
+            // this will short cut for github apps because there's no targetConfiguration
             sdm.addEvent(onChannelLinked(sdm));
-
+            // this _should_ work for github apps too
             sdm.addCommand(IngestOrg);
+
+            // github apps only - this even is only sometimes raised, and will break for non-github apps
+            sdm.addEvent(onGitHubAppsScmId(optsToUse));
         },
     };
 }
@@ -120,6 +127,21 @@ function onScmProvider(options: ConvergenceOptions): EventHandlerRegistration<On
         listener: async (e, ctx) => {
             const providers = e.data;
             return convergeProvider(providers.SCMProvider[0], ctx.workspaceId, ctx.graphClient);
+        },
+    };
+}
+
+/**
+ * EventHandlerRegistration listening for new SCMId events for github apps, and triggering user org convergence
+ */
+function onGitHubAppsScmId(options: ConvergenceOptions): EventHandlerRegistration<OnGibHubAppScmId.Subscription> {
+    return {
+        name: "ConvergeGitHubAppsOnScmId",
+        subscription: GraphQL.subscription("OnGibHubAppScmId"),
+        description: "Converge on GitHub Apps SCMId events",
+        listener: async (e, ctx) => {
+            const scmIds = e.data;
+            return convergeGitHubAppUserInstallations(scmIds.SCMId[0], ctx.graphClient);
         },
     };
 }
