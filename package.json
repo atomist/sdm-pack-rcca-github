@@ -41,9 +41,9 @@
     "@atomist/sdm-local": ">=1.0.5"
   },
   "devDependencies": {
-    "@atomist/automation-client": "1.6.0-master.20190702113653",
-    "@atomist/sdm": "1.6.0-master.20190702114952",
-    "@atomist/sdm-core": "1.6.0-master.20190702115245",
+    "@atomist/automation-client": "^1.6.0",
+    "@atomist/sdm": "1.6.0-master.20190706145121",
+    "@atomist/sdm-core": "1.6.0-master.20190708113257",
     "@atomist/sdm-local": "^1.0.7",
     "@types/mocha": "^5.2.6",
     "@types/power-assert": "^1.5.0",
