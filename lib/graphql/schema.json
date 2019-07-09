@@ -13706,19 +13706,7 @@
             "deprecationReason": null
           },
           {
-            "name": "github_com_app",
-            "description": "",
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "ghe",
-            "description": "",
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ghe_app",
             "description": "",
             "isDeprecated": false,
             "deprecationReason": null

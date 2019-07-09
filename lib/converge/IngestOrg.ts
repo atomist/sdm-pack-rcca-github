@@ -28,7 +28,7 @@ import {
     ScmRepoInput,
     ScmReposInput,
 } from "../typings/types";
-import { loadProvider } from "./api";
+import { isGitHubAppsResourceProvider, loadScmProvider } from "./api";
 import { gitHub } from "./github";
 
 // tslint:disable-next-line:interface-over-type-literal
@@ -45,11 +45,13 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
     },
     listener: async ci => {
 
-        const provider = await loadProvider(ci.context.graphClient, ci.parameters.id);
+        const provider = await loadScmProvider(ci.context.graphClient, ci.parameters.id);
         if (!provider.credential || !provider.credential || !provider.credential.secret) {
             return;
         }
-
+        if (await isGitHubAppsResourceProvider(ci.context.graphClient, provider)) {
+            return;
+        }
         const gh = gitHub(provider.credential.secret, ci.parameters.apiUrl);
         let orgIds: IngestScmOrgs.IngestScmOrgs[] = [];
 
