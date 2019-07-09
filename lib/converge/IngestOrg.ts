@@ -28,7 +28,10 @@ import {
     ScmRepoInput,
     ScmReposInput,
 } from "../typings/types";
-import { isGitHubAppsResourceProvider, loadScmProvider } from "./api";
+import {
+    isGitHubAppsResourceProvider,
+    loadScmProvider,
+} from "./api";
 import { gitHub } from "./github";
 
 // tslint:disable-next-line:interface-over-type-literal

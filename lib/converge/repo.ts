@@ -28,7 +28,10 @@ import {
     OnSdmRepoProvenance,
     ScmProvider,
 } from "../typings/types";
-import { isGitHubAppsResourceProvider, loadScmProvider } from "./api";
+import {
+    isGitHubAppsResourceProvider,
+    loadScmProvider,
+} from "./api";
 import TargetConfiguration = ScmProvider.TargetConfiguration;
 
 export function onRepoProvenance(sdm: SoftwareDeliveryMachine): EventHandlerRegistration<OnSdmRepoProvenance.Subscription> {
