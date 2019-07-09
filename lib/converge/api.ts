@@ -25,6 +25,7 @@ import {
     AddWebhookTag,
     CreateWebhook,
     DeleteWebhook,
+    FetchResourceProvider,
     GitHubAppInstallationInput,
     OnGibHubAppScmId,
     SaveGitHubAppUserInstallations,
@@ -102,8 +103,8 @@ export async function setProviderState(graphClient: GraphClient,
     }
 }
 
-export async function loadProvider(graphClient: GraphClient,
-                                   id: string): Promise<ScmProvider.ScmProvider> {
+export async function loadScmProvider(graphClient: GraphClient,
+                                      id: string): Promise<ScmProvider.ScmProvider> {
     return (await graphClient.query<ScmProviderById.Query, ScmProviderById.Variables>({
         name: "ScmProviderById",
         variables: {
@@ -126,4 +127,21 @@ export async function saveGitHubAppUserInstallations(graphClient: GraphClient,
             },
             options: MutationNoCacheOptions,
         })).saveGitHubAppUserInstallations[0];
+}
+
+export async function loadResourceProvider(graphClient: GraphClient,
+                                           id: string): Promise<FetchResourceProvider.ResourceProvider> {
+    return (await graphClient.query<FetchResourceProvider.Query, FetchResourceProvider.Variables>({
+        name: "FetchResourceProvider",
+        variables: {
+            id,
+        },
+        options: QueryNoCacheOptions,
+    })).ResourceProvider[0];
+}
+
+export async function isGitHubAppsResourceProvider(graphClient: GraphClient,
+                                                   provider: ScmProvider.ScmProvider): Promise<boolean> {
+    const rp = await loadResourceProvider(graphClient, provider.id) as any;
+    return rp.__typename === "GitHubAppResourceProvider";
 }

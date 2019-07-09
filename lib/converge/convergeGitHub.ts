@@ -78,7 +78,6 @@ export function githubConvergeSupport(options: ConvergenceOptions = {}): Extensi
                 ...options,
             };
 
-            // this short-cuts if there is no auth yet (always true for github apps)
             const converge = async (l: any) => {
                 for (const workspaceId of sdm.configuration.workspaceIds) {
                     await convergeWorkspace(workspaceId, sdm, optsToUse);
@@ -94,18 +93,14 @@ export function githubConvergeSupport(options: ConvergenceOptions = {}): Extensi
                 });
                 sdm.addStartupListener(converge);
             }
-            // this will short cut for github apps because there's no targetConfiguration
+
             if (_.get(optsToUse, "events.repoGenerated") === true) {
                 sdm.addEvent(onRepoProvenance(sdm));
             }
-            // this short-cuts if there is no auth yet (always true for github apps)
-            sdm.addEvent(onScmProvider(optsToUse));
-            // this will short cut for github apps because there's no targetConfiguration
-            sdm.addEvent(onChannelLinked(sdm));
-            // this _should_ work for github apps too
-            sdm.addCommand(IngestOrg);
 
-            // github apps only - this even is only sometimes raised, and will break for non-github apps
+            sdm.addEvent(onScmProvider(optsToUse));
+            sdm.addEvent(onChannelLinked(sdm));
+            sdm.addCommand(IngestOrg);
             sdm.addEvent(onGitHubAppsScmId(optsToUse));
         },
     };

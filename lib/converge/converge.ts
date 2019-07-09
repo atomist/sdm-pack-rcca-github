@@ -36,7 +36,8 @@ import {
 } from "../typings/types";
 import {
     deleteWebhook,
-    loadProvider,
+    isGitHubAppsResourceProvider,
+    loadScmProvider,
     saveGitHubAppUserInstallations,
     setProviderState,
 } from "./api";
@@ -91,6 +92,10 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
         return Success;
     }
 
+    if (await isGitHubAppsResourceProvider(graphClient, provider)) {
+        return Success;
+    }
+
     const token = provider.credential.secret;
     const orgs: string[] = _.get(provider, "targetConfiguration.orgSpecs") || [];
     const repos: ScmProvider.RepoSpecs[] = _.get(provider, "targetConfiguration.repoSpecs") || [];
@@ -135,7 +140,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
 
     const webhooksToDelete: string[] = [];
     // Delete webhooks for orgs or repos that went away; for now only mark them to get deleted later
-    for (const webhook of (await loadProvider(graphClient, provider.id)).webhooks) {
+    for (const webhook of (await loadScmProvider(graphClient, provider.id)).webhooks) {
         const org = webhook.tags.find(t => t.name === "org");
         const repo = webhook.tags.find(t => t.name === "repo");
         const hookId = webhook.tags.find(t => t.name === "hook_id");
@@ -176,7 +181,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
     }
 
     // Mark all hooks with no hook_id to get deleted
-    for (const webhook of (await loadProvider(graphClient, provider.id)).webhooks) {
+    for (const webhook of (await loadScmProvider(graphClient, provider.id)).webhooks) {
         const hookId = webhook.tags.find(t => t.name === "hook_id");
         if (!hookId) {
             logger.info(`Deleting webhook because of missing hook_id`);
@@ -358,6 +363,9 @@ export async function convergeRepo(owner: string,
 export async function convergeGitHubAppUserInstallations(scmId: OnGibHubAppScmId.ScmId,
                                                          graphClient: GraphClient): Promise<HandlerResult> {
 
+    if (!await isGitHubAppsResourceProvider(graphClient, scmId.provider)) {
+        return Success;
+    }
     const result = await gitHub(scmId.credential.secret, scmId.provider).apps.listInstallationsForAuthenticatedUser();
     const installs = _.map(result.data.installations, install => {
         return {
