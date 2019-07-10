@@ -29,12 +29,16 @@ import * as _ from "lodash";
 import {
     AtmJobState,
     JobByName,
+    OnGibHubAppScmId,
+    OwnerType,
     ScmProvider,
     ScmProviderStateName,
 } from "../typings/types";
 import {
     deleteWebhook,
-    loadProvider,
+    isGitHubAppsResourceProvider,
+    loadScmProvider,
+    saveGitHubAppUserInstallations,
     setProviderState,
 } from "./api";
 import { ConvergenceOptions } from "./convergeGitHub";
@@ -57,7 +61,7 @@ export async function convergeWorkspace(workspaceId: string,
                                         sdm: SoftwareDeliveryMachine,
                                         options: ConvergenceOptions): Promise<void> {
 
-    // Look for SCMProviders of type github_com
+    // Look for SCMProviders of the appropriate type
     const graphClient = sdm.configuration.graphql.client.factory.create(workspaceId, sdm.configuration);
     const providers = await graphClient.query<ScmProvider.Query, ScmProvider.Variables>({
         name: "ScmProvider",
@@ -85,6 +89,10 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
 
     // Only deal with auth'ed providers
     if (!provider.credential || !provider.credential.secret) {
+        return Success;
+    }
+
+    if (await isGitHubAppsResourceProvider(graphClient, provider)) {
         return Success;
     }
 
@@ -132,7 +140,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
 
     const webhooksToDelete: string[] = [];
     // Delete webhooks for orgs or repos that went away; for now only mark them to get deleted later
-    for (const webhook of (await loadProvider(graphClient, provider.id)).webhooks) {
+    for (const webhook of (await loadScmProvider(graphClient, provider.id)).webhooks) {
         const org = webhook.tags.find(t => t.name === "org");
         const repo = webhook.tags.find(t => t.name === "repo");
         const hookId = webhook.tags.find(t => t.name === "hook_id");
@@ -173,7 +181,7 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
     }
 
     // Mark all hooks with no hook_id to get deleted
-    for (const webhook of (await loadProvider(graphClient, provider.id)).webhooks) {
+    for (const webhook of (await loadScmProvider(graphClient, provider.id)).webhooks) {
         const hookId = webhook.tags.find(t => t.name === "hook_id");
         if (!hookId) {
             logger.info(`Deleting webhook because of missing hook_id`);
@@ -347,3 +355,26 @@ export async function convergeRepo(owner: string,
 }
 
 // tslint:enable:cyclomatic-complexity
+
+/**
+ * Populate the graph with user's visible installations. Token is based on github apps client-id, so
+ * all the token's visible installations should be stored
+ */
+export async function convergeGitHubAppUserInstallations(scmId: OnGibHubAppScmId.ScmId,
+                                                         graphClient: GraphClient): Promise<HandlerResult> {
+
+    if (!await isGitHubAppsResourceProvider(graphClient, scmId.provider)) {
+        return Success;
+    }
+    const result = await gitHub(scmId.credential.secret, scmId.provider).apps.listInstallationsForAuthenticatedUser();
+    const installs = _.map(result.data.installations, install => {
+        return {
+            avatarUrl: install.account.avatar_url,
+            installationId: install.id,
+            owner: install.account.login,
+            ownerType: install.account.type === "User" ? OwnerType.user : OwnerType.organization,
+        };
+    });
+    await saveGitHubAppUserInstallations (graphClient, scmId, installs);
+    return Success;
+}

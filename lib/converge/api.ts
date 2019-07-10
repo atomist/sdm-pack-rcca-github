@@ -17,6 +17,7 @@
 import {
     GraphClient,
     logger,
+    MutationNoCacheOptions,
     QueryNoCacheOptions,
 } from "@atomist/automation-client";
 import * as _ from "lodash";
@@ -24,6 +25,10 @@ import {
     AddWebhookTag,
     CreateWebhook,
     DeleteWebhook,
+    FetchResourceProvider,
+    GitHubAppInstallationInput,
+    OnGibHubAppScmId,
+    SaveGitHubAppUserInstallations,
     ScmProvider,
     ScmProviderById,
     ScmProviderStateName,
@@ -98,8 +103,8 @@ export async function setProviderState(graphClient: GraphClient,
     }
 }
 
-export async function loadProvider(graphClient: GraphClient,
-                                   id: string): Promise<ScmProvider.ScmProvider> {
+export async function loadScmProvider(graphClient: GraphClient,
+                                      id: string): Promise<ScmProvider.ScmProvider> {
     return (await graphClient.query<ScmProviderById.Query, ScmProviderById.Variables>({
         name: "ScmProviderById",
         variables: {
@@ -107,4 +112,36 @@ export async function loadProvider(graphClient: GraphClient,
         },
         options: QueryNoCacheOptions,
     })).SCMProvider[0];
+}
+
+export async function saveGitHubAppUserInstallations(graphClient: GraphClient,
+                                                     scmId: OnGibHubAppScmId.ScmId,
+                                                     installations: GitHubAppInstallationInput[]):
+    Promise<SaveGitHubAppUserInstallations.SaveGitHubAppUserInstallations> {
+        return (await graphClient.mutate<SaveGitHubAppUserInstallations.Mutation, SaveGitHubAppUserInstallations.Variables>({
+            name: "SaveGitHubAppUserInstallations",
+            variables: {
+                installations,
+                pid: scmId.provider.id,
+                userId: scmId.id,
+            },
+            options: MutationNoCacheOptions,
+        })).saveGitHubAppUserInstallations[0];
+}
+
+export async function loadResourceProvider(graphClient: GraphClient,
+                                           id: string): Promise<FetchResourceProvider.ResourceProvider> {
+    return (await graphClient.query<FetchResourceProvider.Query, FetchResourceProvider.Variables>({
+        name: "FetchResourceProvider",
+        variables: {
+            id,
+        },
+        options: QueryNoCacheOptions,
+    })).ResourceProvider[0];
+}
+
+export async function isGitHubAppsResourceProvider(graphClient: GraphClient,
+                                                   provider: ScmProvider.ScmProvider): Promise<boolean> {
+    const rp = await loadResourceProvider(graphClient, provider.id) as any;
+    return rp.__typename === "GitHubAppResourceProvider";
 }

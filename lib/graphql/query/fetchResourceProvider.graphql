@@ -1,0 +1,6 @@
+query FetchResourceProvider($id: ID!) {
+  ResourceProvider(id: $id) {
+    __typename
+    id
+  }
+}

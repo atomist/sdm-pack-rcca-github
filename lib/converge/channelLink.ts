@@ -28,6 +28,7 @@ import {
     ChannelLinkCreated,
     ConfigureGitHubScmResourceProvider,
 } from "../typings/types";
+import { isGitHubAppsResourceProvider } from "./api";
 
 export function onChannelLinked(sdm: SoftwareDeliveryMachine): EventHandlerRegistration<ChannelLinkCreated.Subscription> {
     return {
@@ -37,7 +38,9 @@ export function onChannelLinked(sdm: SoftwareDeliveryMachine): EventHandlerRegis
         listener: async (e, ctx) => {
             const repo = e.data.ChannelLink[0].repo;
             const provider = _.get(e.data, "ChannelLink[0].repo.org.scmProvider");
-
+            if (await isGitHubAppsResourceProvider(ctx.graphClient, provider)) {
+                return Success;
+            }
             if (!!provider) {
                 const repoSpecs: ChannelLinkCreated.RepoSpecs[] = _.get(provider, "targetConfiguration.repoSpecs") || [];
                 if (!repoSpecs.some(r => r.ownerSpec === repo.owner && r.nameSpec === repo.name)) {
