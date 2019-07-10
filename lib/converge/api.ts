@@ -119,7 +119,7 @@ export async function saveGitHubAppUserInstallations(graphClient: GraphClient,
                                                      installations: GitHubAppInstallationInput[]):
     Promise<SaveGitHubAppUserInstallations.SaveGitHubAppUserInstallations> {
         return (await graphClient.mutate<SaveGitHubAppUserInstallations.Mutation, SaveGitHubAppUserInstallations.Variables>({
-            name: "SaveGitHubAppUserInstallations",
+            name: "saveGitHubAppUserInstallations",
             variables: {
                 installations,
                 pid: scmId.provider.id,
