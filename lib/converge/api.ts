@@ -142,6 +142,6 @@ export async function loadResourceProvider(graphClient: GraphClient,
 
 export async function isGitHubAppsResourceProvider(graphClient: GraphClient,
                                                    provider: ScmProvider.ScmProvider): Promise<boolean> {
-    const rp = await loadResourceProvider(graphClient, provider.id) as any;
-    return rp.__typename === "GitHubAppResourceProvider";
+    const rp = await loadResourceProvider(graphClient, provider.id);
+    return rp.__typename as any === "GitHubAppResourceProvider";
 }
