@@ -22,7 +22,7 @@ This page details all runtime OSS dependencies of `@atomist/sdm-pack-rcca-github
 |[GPL-3.0](#gpl-30)|3|
 |[ISC](#isc)|77|
 |[MIT AND BSD-3-Clause](#mit-and-bsd-3-clause)|1|
-|[MIT](#mit)|853|
+|[MIT](#mit)|854|
 |[Unlicense](#unlicense)|1|
 |[WTFPL](#wtfpl)|2|
 
@@ -44,7 +44,7 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 |`@kubernetes/client-node`|`0.10.2`|Kubernetes Authors|[https://github.com/kubernetes-client/javascript](https://github.com/kubernetes-client/javascript)|
 |`atob`|`2.1.2`|AJ ONeal|[git://git.coolaj86.com/coolaj86/atob.js](git://git.coolaj86.com/coolaj86/atob.js)|
 |`aws-sign2`|`0.7.0`|Mikeal Rogers|[https://github.com/mikeal/aws-sign](https://github.com/mikeal/aws-sign)|
-|`before-after-hook`|`1.4.0`|Gregor Martynus|[https://github.com/gr2m/before-after-hook](https://github.com/gr2m/before-after-hook)|
+|`before-after-hook`|`2.0.1`|Gregor Martynus|[https://github.com/gr2m/before-after-hook](https://github.com/gr2m/before-after-hook)|
 |`caseless`|`0.12.0`|Mikeal Rogers|[https://github.com/mikeal/caseless](https://github.com/mikeal/caseless)|
 |`detect-libc`|`1.0.3`|Lovell Fuller|[https://github.com/lovell/detect-libc](https://github.com/lovell/detect-libc)|
 |`diff-match-patch`|`1.0.4`||[https://github.com/JackuB/diff-match-patch](https://github.com/JackuB/diff-match-patch)|
@@ -58,7 +58,7 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 |`simple-node-logger`|`0.93.42`|darryl.west@raincitysoftware.com|[https://github.com/darrylwest/simple-node-logger](https://github.com/darrylwest/simple-node-logger)|
 |`tslib`|`1.10.0`|Microsoft Corp.|[https://github.com/Microsoft/tslib](https://github.com/Microsoft/tslib)|
 |`tunnel-agent`|`0.6.0`|Mikeal Rogers|[https://github.com/mikeal/tunnel-agent](https://github.com/mikeal/tunnel-agent)|
-|`typescript`|`3.5.2`|Microsoft Corp.|[https://github.com/Microsoft/TypeScript](https://github.com/Microsoft/TypeScript)|
+|`typescript`|`3.5.3`|Microsoft Corp.|[https://github.com/Microsoft/TypeScript](https://github.com/Microsoft/TypeScript)|
 
 #### BSD
 
@@ -263,11 +263,11 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`@oclif/plugin-plugins`|`1.7.8`|Jeff Dickey @jdxcode|[https://github.com/oclif/plugin-plugins](https://github.com/oclif/plugin-plugins)|
 |`@oclif/plugin-warn-if-update-available`|`1.7.0`|Jeff Dickey @jdxcode|[https://github.com/oclif/plugin-warn-if-update-available](https://github.com/oclif/plugin-warn-if-update-available)|
 |`@oclif/screen`|`1.0.4`|Jeff Dickey @jdxcode|[https://github.com/oclif/screen](https://github.com/oclif/screen)|
-|`@octokit/endpoint`|`5.2.0`||[https://github.com/octokit/endpoint.js](https://github.com/octokit/endpoint.js)|
+|`@octokit/endpoint`|`5.2.1`||[https://github.com/octokit/endpoint.js](https://github.com/octokit/endpoint.js)|
 |`@octokit/plugin-throttling`|`2.6.0`|Simon Grondin|[https://github.com/octokit/plugin-throttling.js](https://github.com/octokit/plugin-throttling.js)|
 |`@octokit/request-error`|`1.0.4`||[https://github.com/octokit/request-error.js](https://github.com/octokit/request-error.js)|
-|`@octokit/request`|`4.1.1`||[https://github.com/octokit/request.js](https://github.com/octokit/request.js)|
-|`@octokit/rest`|`16.28.2`|Gregor Martynus|[https://github.com/octokit/rest.js](https://github.com/octokit/rest.js)|
+|`@octokit/request`|`5.0.0`||[https://github.com/octokit/request.js](https://github.com/octokit/request.js)|
+|`@octokit/rest`|`16.28.3`|Gregor Martynus|[https://github.com/octokit/rest.js](https://github.com/octokit/rest.js)|
 |`@samverschueren/stream-to-observable`|`0.3.0`||[https://github.com/SamVerschueren/stream-to-observable](https://github.com/SamVerschueren/stream-to-observable)|
 |`@sindresorhus/is`|`0.7.0`|Sindre Sorhus|[https://github.com/sindresorhus/is](https://github.com/sindresorhus/is)|
 |`@typed/curry`|`1.0.1`|Tylor Steinberger|[https://github.com/TylorS/typed-curry](https://github.com/TylorS/typed-curry)|
@@ -517,7 +517,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`decompress-response`|`3.3.0`||[https://github.com/sindresorhus/decompress-response](https://github.com/sindresorhus/decompress-response)|
 |`deep-extend`|`0.6.0`|Viacheslav Lotsmanov|[https://github.com/unclechu/node-deep-extend](https://github.com/unclechu/node-deep-extend)|
 |`deepmerge`|`3.2.0`|Nick Fisher|[https://github.com/TehShrike/deepmerge](https://github.com/TehShrike/deepmerge)|
-|`deepmerge`|`3.3.0`||[https://github.com/TehShrike/deepmerge](https://github.com/TehShrike/deepmerge)|
+|`deepmerge`|`4.0.0`||[https://github.com/TehShrike/deepmerge](https://github.com/TehShrike/deepmerge)|
 |`define-properties`|`1.1.3`|Jordan Harband|[https://github.com/ljharb/define-properties](https://github.com/ljharb/define-properties)|
 |`define-property`|`0.2.5`|Jon Schlinkert|[https://github.com/jonschlinkert/define-property](https://github.com/jonschlinkert/define-property)|
 |`define-property`|`1.0.0`|Jon Schlinkert|[https://github.com/jonschlinkert/define-property](https://github.com/jonschlinkert/define-property)|
@@ -768,6 +768,7 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |`lodash.toarray`|`4.4.0`|John-David Dalton|[https://github.com/lodash/lodash](https://github.com/lodash/lodash)|
 |`lodash.uniq`|`4.5.0`|John-David Dalton|[https://github.com/lodash/lodash](https://github.com/lodash/lodash)|
 |`lodash`|`4.17.11`|John-David Dalton|[https://github.com/lodash/lodash](https://github.com/lodash/lodash)|
+|`lodash`|`4.17.13`|John-David Dalton|[https://github.com/lodash/lodash](https://github.com/lodash/lodash)|
 |`log-symbols`|`1.0.2`|Sindre Sorhus|[https://github.com/sindresorhus/log-symbols](https://github.com/sindresorhus/log-symbols)|
 |`log-symbols`|`2.2.0`|Sindre Sorhus|[https://github.com/sindresorhus/log-symbols](https://github.com/sindresorhus/log-symbols)|
 |`log-update`|`2.3.0`|Sindre Sorhus|[https://github.com/sindresorhus/log-update](https://github.com/sindresorhus/log-update)|
