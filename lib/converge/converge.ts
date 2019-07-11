@@ -29,7 +29,7 @@ import * as _ from "lodash";
 import {
     AtmJobState,
     JobByName,
-    OnGibHubAppScmId,
+    OnGitHubAppScmId,
     OwnerType,
     ScmProvider,
     ScmProviderStateName,
@@ -50,9 +50,9 @@ import {
     printError,
 } from "./github";
 import {
-    IngestOrg,
-    IngestOrgParameters,
-} from "./IngestOrg";
+    IngestOrgs,
+    IngestOrgsParameters,
+} from "./IngestOrgs";
 
 /**
  * Start the convergence for an entire workspace
@@ -206,10 +206,10 @@ export async function convergeProvider(provider: ScmProvider.ScmProvider,
 
         if (!(jobs.AtmJob || []).some(j => j.state === AtmJobState.running)) {
             // Finally retrieve all existing orgs and send them over for ingestion
-            await createJob<IngestOrgParameters>({
+            await createJob<IngestOrgsParameters>({
                     name,
                     description: "Discovering repositories",
-                    command: IngestOrg,
+                    command: IngestOrgs,
                     parameters: {
                         id: provider.id,
                         providerId: provider.providerId,
@@ -360,7 +360,7 @@ export async function convergeRepo(owner: string,
  * Populate the graph with user's visible installations. Token is based on github apps client-id, so
  * all the token's visible installations should be stored
  */
-export async function convergeGitHubAppUserInstallations(scmId: OnGibHubAppScmId.ScmId,
+export async function convergeGitHubAppUserInstallations(scmId: OnGitHubAppScmId.ScmId,
                                                          graphClient: GraphClient): Promise<HandlerResult> {
 
     if (!await isGitHubAppsResourceProvider(graphClient, scmId.provider)) {

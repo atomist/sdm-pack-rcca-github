@@ -22,7 +22,7 @@ import {
 } from "@atomist/sdm";
 import * as _ from "lodash";
 import {
-    OnGibHubAppScmId,
+    OnGitHubAppScmId,
     OnScmProvider,
     ProviderType,
 } from "../typings/types";
@@ -32,7 +32,9 @@ import {
     convergeProvider,
     convergeWorkspace,
 } from "./converge";
+import { onGitHubAppInstallation } from "./convergeGitHubAppInstallation";
 import { IngestOrg } from "./IngestOrg";
+import { IngestOrgs } from "./IngestOrgs";
 import { onRepoProvenance } from "./repo";
 
 /**
@@ -101,7 +103,9 @@ export function githubConvergeSupport(options: ConvergenceOptions = {}): Extensi
             sdm.addEvent(onScmProvider(optsToUse));
             sdm.addEvent(onChannelLinked(sdm));
             sdm.addCommand(IngestOrg);
+            sdm.addCommand(IngestOrgs);
             sdm.addEvent(onGitHubAppsScmId(optsToUse));
+            sdm.addEvent(onGitHubAppInstallation(optsToUse));
         },
     };
 }
@@ -129,7 +133,7 @@ function onScmProvider(options: ConvergenceOptions): EventHandlerRegistration<On
 /**
  * EventHandlerRegistration listening for new SCMId events for github apps, and triggering user org convergence
  */
-function onGitHubAppsScmId(options: ConvergenceOptions): EventHandlerRegistration<OnGibHubAppScmId.Subscription> {
+function onGitHubAppsScmId(options: ConvergenceOptions): EventHandlerRegistration<OnGitHubAppScmId.Subscription> {
     return {
         name: "ConvergeGitHubAppsOnScmId",
         subscription: GraphQL.subscription("OnGibHubAppScmId"),

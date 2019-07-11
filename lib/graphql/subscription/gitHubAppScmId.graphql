@@ -1,4 +1,4 @@
-subscription OnGibHubAppScmId {
+subscription OnGitHubAppScmId {
   SCMId {
     id
     login @required

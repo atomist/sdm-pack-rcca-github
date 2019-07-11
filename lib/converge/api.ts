@@ -27,7 +27,7 @@ import {
     DeleteWebhook,
     FetchResourceProvider,
     GitHubAppInstallationInput,
-    OnGibHubAppScmId,
+    OnGitHubAppScmId,
     SaveGitHubAppUserInstallations,
     ScmProvider,
     ScmProviderById,
@@ -115,7 +115,7 @@ export async function loadScmProvider(graphClient: GraphClient,
 }
 
 export async function saveGitHubAppUserInstallations(graphClient: GraphClient,
-                                                     scmId: OnGibHubAppScmId.ScmId,
+                                                     scmId: OnGitHubAppScmId.ScmId,
                                                      installations: GitHubAppInstallationInput[]):
     Promise<SaveGitHubAppUserInstallations.SaveGitHubAppUserInstallations> {
         return (await graphClient.mutate<SaveGitHubAppUserInstallations.Mutation, SaveGitHubAppUserInstallations.Variables>({
