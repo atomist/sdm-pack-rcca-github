@@ -136,7 +136,7 @@ function onScmProvider(options: ConvergenceOptions): EventHandlerRegistration<On
 function onGitHubAppsScmId(options: ConvergenceOptions): EventHandlerRegistration<OnGitHubAppScmId.Subscription> {
     return {
         name: "ConvergeGitHubAppsOnScmId",
-        subscription: GraphQL.subscription("OnGibHubAppScmId"),
+        subscription: GraphQL.subscription("OnGitHubAppScmId"),
         description: "Converge on GitHub Apps SCMId events",
         listener: async (e, ctx) => {
             const scmIds = e.data;
