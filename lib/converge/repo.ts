@@ -36,8 +36,8 @@ import TargetConfiguration = ScmProvider.TargetConfiguration;
 
 export function onRepoProvenance(sdm: SoftwareDeliveryMachine): EventHandlerRegistration<OnSdmRepoProvenance.Subscription> {
     return {
-        name: "onRepoProvenance",
-        description: "Add repo level webhook for newly generated repositories",
+        name: "OnRepoProvenance",
+        description: "Add repo-level webhook for newly generated repositories",
         subscription: GraphQL.subscription("OnSdmRepoProvenance"),
         listener: async (e, ctx) => {
             const push = e.data.SdmRepoProvenance[0];
