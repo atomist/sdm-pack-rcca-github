@@ -26,9 +26,6 @@ import {
     CreateWebhook,
     DeleteWebhook,
     FetchResourceProvider,
-    GitHubAppInstallationInput,
-    OnGitHubAppScmId,
-    SaveGitHubAppUserInstallations,
     ScmProvider,
     ScmProviderById,
     ScmProviderStateName,
@@ -112,21 +109,6 @@ export async function loadScmProvider(graphClient: GraphClient,
         },
         options: QueryNoCacheOptions,
     })).SCMProvider[0];
-}
-
-export async function saveGitHubAppUserInstallations(graphClient: GraphClient,
-                                                     scmId: OnGitHubAppScmId.ScmId,
-                                                     installations: GitHubAppInstallationInput[]):
-    Promise<SaveGitHubAppUserInstallations.SaveGitHubAppUserInstallations> {
-        return (await graphClient.mutate<SaveGitHubAppUserInstallations.Mutation, SaveGitHubAppUserInstallations.Variables>({
-            name: "saveGitHubAppUserInstallations",
-            variables: {
-                installations,
-                pid: scmId.provider.id,
-                userId: scmId.id,
-            },
-            options: MutationNoCacheOptions,
-        })).saveGitHubAppUserInstallations[0];
 }
 
 export async function loadResourceProvider(graphClient: GraphClient,
