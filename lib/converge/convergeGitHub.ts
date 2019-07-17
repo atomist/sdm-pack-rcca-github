@@ -22,13 +22,11 @@ import {
 } from "@atomist/sdm";
 import * as _ from "lodash";
 import {
-    OnGitHubAppScmId,
     OnScmProvider,
     ProviderType,
 } from "../typings/types";
 import { onChannelLinked } from "./channelLink";
 import {
-    convergeGitHubAppUserInstallations,
     convergeProvider,
     convergeWorkspace,
 } from "./converge";
@@ -104,7 +102,6 @@ export function githubConvergeSupport(options: ConvergenceOptions = {}): Extensi
             sdm.addEvent(onChannelLinked(sdm));
             sdm.addCommand(IngestOrg);
             sdm.addCommand(IngestOrgs);
-            sdm.addEvent(onGitHubAppsScmId(optsToUse));
             sdm.addEvent(onGitHubAppInstallation(optsToUse));
         },
     };
@@ -126,21 +123,6 @@ function onScmProvider(options: ConvergenceOptions): EventHandlerRegistration<On
         listener: async (e, ctx) => {
             const providers = e.data;
             return convergeProvider(providers.SCMProvider[0], ctx.workspaceId, ctx.graphClient);
-        },
-    };
-}
-
-/**
- * EventHandlerRegistration listening for new SCMId events for github apps, and triggering user org convergence
- */
-function onGitHubAppsScmId(options: ConvergenceOptions): EventHandlerRegistration<OnGitHubAppScmId.Subscription> {
-    return {
-        name: "ConvergeGitHubAppsOnScmId",
-        subscription: GraphQL.subscription("OnGitHubAppScmId"),
-        description: "Converge on GitHub Apps SCMId events",
-        listener: async (e, ctx) => {
-            const scmIds = e.data;
-            return convergeGitHubAppUserInstallations(scmIds.SCMId[0], ctx.graphClient);
         },
     };
 }

@@ -1,5 +1,0 @@
-mutation saveGitHubAppUserInstallations($installations: [GitHubAppInstallationInput!]!, $pid: ID!, $userId: ID!) {
-  saveGitHubAppUserInstallations(gitHubAppInstallations: $installations, resourceProviderId: $pid, resourceUserId: $userId) {
-    id
-  }
-}
