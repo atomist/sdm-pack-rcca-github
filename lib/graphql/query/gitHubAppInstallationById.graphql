@@ -1,0 +1,8 @@
+query GitHubAppInstallationById($id: ID!) {
+    GitHubAppInstallation(id: $id) {
+        id
+        token {
+            secret
+        }
+    }
+}

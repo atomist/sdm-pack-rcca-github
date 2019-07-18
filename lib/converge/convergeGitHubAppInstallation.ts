@@ -44,7 +44,7 @@ export function onGitHubAppInstallation(options: ConvergenceOptions): EventHandl
             const app = e.data.GitHubAppInstallation[0];
             const provider = app.gitHubAppResourceProvider;
 
-            const name = `RepositoryDiscovery/${provider.providerId}/${provider.credential.owner.login}/${app.owner}`;
+            const name = `RepositoryDiscovery/${provider.providerId}/${app.owner}`;
             const jobs = await ctx.graphClient.query<JobByName.Query, JobByName.Variables>({
                 name: "JobByName",
                 variables: {

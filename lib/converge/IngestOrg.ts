@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
+import {
+    logger,
+    QueryNoCacheOptions,
+    Success,
+} from "@atomist/automation-client";
 import { CommandHandlerRegistration } from "@atomist/sdm";
 import {
+    GitHubAppInstallationById,
     IngestScmRepos,
     OwnerType,
     ReposByOrg,
     ScmRepoInput,
     ScmReposInput,
 } from "../typings/types";
-import {
-    isGitHubAppsResourceProvider,
-    loadScmProvider,
-} from "./api";
 import { gitHub } from "./github";
 
 // tslint:disable-next-line:interface-over-type-literal
@@ -46,14 +47,20 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
     },
     listener: async ci => {
 
-        const provider = await loadScmProvider(ci.context.graphClient, ci.parameters.id);
-        if (!provider.credential || !provider.credential || !provider.credential.secret) {
-            return;
+        const app = await ci.context.graphClient.query<GitHubAppInstallationById.Query, GitHubAppInstallationById.Variables>({
+            name: "GitHubAppInstallationById",
+            variables: {
+                id: ci.parameters.orgId,
+            },
+            options: QueryNoCacheOptions,
+        });
+
+        const token = _.get(app, "GitHubAppInstallation[0].token.secret");
+        if (!token) {
+            return Success;
         }
-        if (await isGitHubAppsResourceProvider(ci.context.graphClient, provider)) {
-            return;
-        }
-        const gh = gitHub(provider.credential.secret, ci.parameters.apiUrl);
+
+        const gh = gitHub(token, ci.parameters.apiUrl);
 
         logger.info(`Ingesting repos for org '${ci.parameters.org}'`);
 
@@ -108,6 +115,8 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
         }
 
         logger.info(`Ingesting repos for org '${ci.parameters.org}' completed`);
+
+        return Success;
 
     },
 };

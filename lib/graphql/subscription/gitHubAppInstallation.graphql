@@ -7,11 +7,6 @@ subscription OnGitHubAppInstallation {
             id
             providerId
             apiUrl
-            credential {
-                owner {
-                    login
-                }
-            }
         }
     }
 }
