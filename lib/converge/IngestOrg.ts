@@ -20,6 +20,7 @@ import {
     Success,
 } from "@atomist/automation-client";
 import { CommandHandlerRegistration } from "@atomist/sdm";
+import * as _ from "lodash";
 import {
     GitHubAppInstallationById,
     IngestScmRepos,
