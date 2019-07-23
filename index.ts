@@ -31,3 +31,7 @@ export {
     // exporting this will bring in sdm-local
     // githubWatchSupport,
 } from "./lib/watch/watchGitHub";
+
+export {
+    githubGoalChecksSupport,
+} from "./lib/goal-set-checks/checks";
