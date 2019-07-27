@@ -20,6 +20,7 @@ import {
     Success,
 } from "@atomist/automation-client";
 import { CommandHandlerRegistration } from "@atomist/sdm";
+import { AppsListReposResponse } from "@octokit/rest";
 import * as _ from "lodash";
 import {
     GitHubAppInstallationById,
@@ -32,7 +33,7 @@ import {
 import { gitHub } from "./github";
 
 // tslint:disable-next-line:interface-over-type-literal
-export type IngestOrgParameters = { id: string, providerId: string, apiUrl: string, org: string, orgId: string, type: OwnerType };
+export type IngestOrgParameters = { id: string, providerId: string, apiUrl: string, org: string, orgId: string };
 
 export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
     name: "IngestOrg",
@@ -44,7 +45,6 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
         apiUrl: { description: "URL of the api endpoint" },
         org: { description: "Name of the org" },
         orgId: { description: "Internal id of the org" },
-        type: { description: "Type of the org" },
     },
     listener: async ci => {
 
@@ -73,16 +73,14 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
             },
         })).Repo;
 
-        let options;
-        if (ci.parameters.type === OwnerType.organization) {
-            options = gh.repos.listForOrg.endpoint.merge({ org: ci.parameters.org, per_page: 100 });
-        } else {
-            options = gh.repos.listForUser.endpoint.merge({ username: ci.parameters.org, per_page: 100 });
-        }
+        const options = gh.apps.listRepos.endpoint.merge({ per_page: 100 });
 
         let repos = 0;
         for await (const response of gh.paginate.iterator(options)) {
-            const newRepos = response.data.filter((r: any) => !r.archived).filter((r: any) => !existingRepos.some(er => er.name === r.name));
+            const newRepos = (response.data as AppsListReposResponse).repositories
+                .filter(r => !r.archived)
+                .filter(r => r.owner.login === ci.parameters.org)
+                .filter(r => !existingRepos.some(er => er.name === r.name));
 
             const scmIngest: ScmReposInput = {
                 orgId: ci.parameters.orgId,

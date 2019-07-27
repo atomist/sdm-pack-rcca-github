@@ -64,7 +64,6 @@ export function onGitHubAppInstallation(options: ConvergenceOptions): EventHandl
                             apiUrl: provider.apiUrl,
                             org: app.owner,
                             orgId: app.id,
-                            type: app.ownerType,
                         },
                     },
                     ctx);
