@@ -20,12 +20,13 @@ import {
     Success,
 } from "@atomist/automation-client";
 import { CommandHandlerRegistration } from "@atomist/sdm";
-import { AppsListReposResponse } from "@octokit/rest";
+import {
+    AppsListReposResponseRepositoriesItem,
+} from "@octokit/rest";
 import * as _ from "lodash";
 import {
     GitHubAppInstallationById,
     IngestScmRepos,
-    OwnerType,
     ReposByOrg,
     ScmRepoInput,
     ScmReposInput,
@@ -77,7 +78,7 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
 
         let repos = 0;
         for await (const response of gh.paginate.iterator(options)) {
-            const newRepos = (response.data as AppsListReposResponse).repositories
+            const newRepos = (response.data as AppsListReposResponseRepositoriesItem[])
                 .filter(r => !r.archived)
                 .filter(r => r.owner.login === ci.parameters.org)
                 .filter(r => !existingRepos.some(er => er.name === r.name));
