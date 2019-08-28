@@ -33,6 +33,10 @@ import {
 import { onGitHubAppInstallation } from "./convergeGitHubAppInstallation";
 import { IngestOrg } from "./IngestOrg";
 import { IngestOrgs } from "./IngestOrgs";
+import {
+    onPullRequestClosed,
+    onPullRequestOpened,
+} from "./pullRequest";
 import { onRepoProvenance } from "./repo";
 
 /**
@@ -103,6 +107,8 @@ export function githubConvergeSupport(options: ConvergenceOptions = {}): Extensi
             sdm.addCommand(IngestOrg);
             sdm.addCommand(IngestOrgs);
             sdm.addEvent(onGitHubAppInstallation(optsToUse));
+            sdm.addEvent(onPullRequestClosed(sdm));
+            sdm.addEvent(onPullRequestOpened(sdm));
         },
     };
 }

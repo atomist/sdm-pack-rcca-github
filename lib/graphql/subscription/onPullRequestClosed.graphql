@@ -1,0 +1,18 @@
+subscription OnPullRequestClosed {
+    PullRequest(actions: [closed]) {
+        number
+        branchName
+        repo {
+            owner
+            name
+            org {
+                provider {
+                    apiUrl
+                }
+            }
+        }
+        labels(name: "branch:delete-on-close") @required {
+            name
+        }
+    }
+}

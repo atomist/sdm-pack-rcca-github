@@ -1,0 +1,18 @@
+subscription OnPullRequestOpened {
+    PullRequest(actions: [created, opened, reopened]) {
+        number
+        body
+        repo {
+            owner
+            name
+            org {
+                provider {
+                    apiUrl
+                }
+            }
+        }
+        labels {
+            name
+        }
+    }
+}
