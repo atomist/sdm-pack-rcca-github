@@ -52,7 +52,7 @@ export function onPullRequestOpened(sdm: SoftwareDeliveryMachine): EventHandlerR
                 let tagMatches = tagRegex.exec(pr.body);
                 const tags = [];
                 while (!!tagMatches) {
-                    tags.push(tagMatches[0]);
+                    tags.push(tagMatches[1]);
                     tagMatches = tagRegex.exec(pr.body);
                 }
 
