@@ -11,7 +11,7 @@ subscription OnPullRequestClosed {
                 }
             }
         }
-        labels(name: "branch:delete-on-close") @required {
+        labels(name: "auto-branch-delete:on-close") @required {
             name
         }
     }
