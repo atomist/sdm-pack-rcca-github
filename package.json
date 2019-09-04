@@ -28,35 +28,35 @@
   "dependencies": {
     "@atomist/slack-messages": "^1.1.1",
     "@octokit/plugin-throttling": "^2.6.0",
-    "@octokit/rest": "^16.28.3",
+    "@octokit/rest": "^16.28.9",
     "@types/fs-extra": "^8.0.0",
     "fs-extra": "^8.1.0",
-    "lodash": "^4.17.13",
+    "lodash": "^4.17.15",
     "minimatch": "^3.0.4"
   },
   "peerDependencies": {
-    "@atomist/automation-client": ">=1.6.1",
-    "@atomist/sdm": ">=1.6.0",
-    "@atomist/sdm-core": ">=1.6.0",
-    "@atomist/sdm-local": ">=1.0.9"
+    "@atomist/automation-client": "^1.6.2",
+    "@atomist/sdm": "^1.6.1",
+    "@atomist/sdm-core": "^1.6.1",
+    "@atomist/sdm-local": "^1.2.0"
   },
   "devDependencies": {
-    "@atomist/automation-client": "^1.6.1",
-    "@atomist/sdm": "^1.6.0",
-    "@atomist/sdm-core": "^1.6.0",
-    "@atomist/sdm-local": "^1.0.9",
+    "@atomist/automation-client": "1.6.3-master.20190904061426",
+    "@atomist/sdm": "1.6.2-master.20190903184656",
+    "@atomist/sdm-core": "1.6.2-master.20190903201907",
+    "@atomist/sdm-local": "^1.2.0",
     "@types/mocha": "^5.2.7",
     "@types/power-assert": "^1.5.0",
     "espower-typescript": "^9.0.2",
-    "mocha": "^6.1.4",
+    "mocha": "^6.2.0",
     "npm-run-all": "^4.1.5",
     "power-assert": "^1.6.1",
-    "rimraf": "^2.6.3",
+    "rimraf": "^3.0.0",
     "supervisor": "^0.12.0",
     "ts-node": "^8.3.0",
-    "tslint": "^5.18.0",
-    "typedoc": "^0.14.2",
-    "typescript": "^3.5.3"
+    "tslint": "^5.19.0",
+    "typedoc": "^0.15.0",
+    "typescript": "^3.6.2"
   },
   "directories": {
     "test": "test"
