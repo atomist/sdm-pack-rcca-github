@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import {
-    logger,
-    QueryNoCacheOptions,
-    Success,
-} from "@atomist/automation-client";
-import { CommandHandlerRegistration } from "@atomist/sdm";
+import { Success } from "@atomist/automation-client/lib/HandlerResult";
+import { QueryNoCacheOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
+import { logger } from "@atomist/automation-client/lib/util/logger";
+import { CommandHandlerRegistration } from "@atomist/sdm/lib/api/registration/CommandHandlerRegistration";
 import {
     AppsListReposResponseRepositoriesItem,
 } from "@octokit/rest";

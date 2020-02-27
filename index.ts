@@ -15,22 +15,8 @@
  */
 
 export {
-    githubAutoMergeSupport,
-} from "./lib/auto-merge/autoMerge";
-
-export {
-    ConvergenceOptions,
     githubConvergeSupport,
 } from "./lib/converge/convergeGitHub";
-
-export {
-    githubLabelSupport,
-} from "./lib/labels/labelsSupport";
-
-export {
-    // exporting this will bring in sdm-local
-    // githubWatchSupport,
-} from "./lib/watch/watchGitHub";
 
 export {
     githubGoalChecksSupport,

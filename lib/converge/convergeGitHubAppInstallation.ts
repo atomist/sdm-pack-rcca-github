@@ -14,32 +14,27 @@
  * limitations under the License.
  */
 
-import {
-    GraphQL,
-    logger,
-    QueryNoCacheOptions,
-    Success,
-} from "@atomist/automation-client";
-import {
-    createJob,
-    EventHandlerRegistration,
-} from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { Success } from "@atomist/automation-client/lib/HandlerResult";
+import { QueryNoCacheOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
+import { logger } from "@atomist/automation-client/lib/util/logger";
+import { createJob } from "@atomist/sdm/lib/api-helper/misc/job/createJob";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import {
     AtmJobState,
     JobByName,
     OnGitHubAppInstallation,
 } from "../typings/types";
-import { ConvergenceOptions } from "./convergeGitHub";
 import {
     IngestOrg,
     IngestOrgParameters,
 } from "./IngestOrg";
 
-export function onGitHubAppInstallation(options: ConvergenceOptions): EventHandlerRegistration<OnGitHubAppInstallation.Subscription> {
+export function onGitHubAppInstallation(): EventHandlerRegistration<OnGitHubAppInstallation.Subscription> {
     return {
         name: "ConvergeOnGitHubAppInstallation",
         description: "Converge a GitHub app installing when it is getting linked",
-        subscription: GraphQL.subscription("OnGitHubAppInstallation"),
+        subscription: subscription("OnGitHubAppInstallation"),
         listener: async (e, ctx) => {
             const app = e.data.GitHubAppInstallation[0];
             const provider = app.gitHubAppResourceProvider;

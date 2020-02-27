@@ -14,121 +14,21 @@
  * limitations under the License.
  */
 
-import { GraphQL } from "@atomist/automation-client";
-import {
-    EventHandlerRegistration,
-    ExtensionPack,
-    metadata,
-} from "@atomist/sdm";
-import * as _ from "lodash";
-import {
-    OnScmProvider,
-    ProviderType,
-} from "../typings/types";
-import { onChannelLinked } from "./channelLink";
-import {
-    convergeProvider,
-    convergeWorkspace,
-} from "./converge";
+import { metadata } from "@atomist/sdm/lib/api-helper/misc/extensionPack";
+import { ExtensionPack } from "@atomist/sdm/lib/api/machine/ExtensionPack";
 import { onGitHubAppInstallation } from "./convergeGitHubAppInstallation";
 import { IngestOrg } from "./IngestOrg";
-import { IngestOrgs } from "./IngestOrgs";
-import {
-    onPullRequestClosed,
-    onPullRequestOpened,
-} from "./pullRequest";
-import { onRepoProvenance } from "./repo";
-
-/**
- * Configuration options for the GitHub RCCA
- */
-export interface ConvergenceOptions {
-    /**
-     * Interval in ms of convergence runs
-     * If not value is provided here, configuration is checked at 'sdm.converge.github.interval'
-     */
-    interval?: number;
-
-    /**
-     * Provider type to converge for
-     * If not value is provided here, configuration is checked at 'sdm.converge.github.providerType'
-     */
-    providerType?: ProviderType.github_com | ProviderType.ghe;
-
-    /**
-     * Additional events that can trigger convergence
-     */
-    events?: {
-        /**
-         * Generated repos via one of your SDM generators should get a repo webhook
-         */
-        repoGenerated?: boolean;
-    };
-}
 
 /**
  * GitHub RCCA Extension Pack to manage webhook resources on GitHub.com or on-prem GHE
  * @param options
  */
-export function githubConvergeSupport(options: ConvergenceOptions = {}): ExtensionPack {
+export function githubConvergeSupport(): ExtensionPack {
     return {
         ...metadata("converge"),
         configure: sdm => {
-
-            const optsToUse: ConvergenceOptions = {
-                interval: _.get(sdm, "configuration.sdm.converge.github.interval", 1000 * 60 * 10),
-                providerType: _.get(sdm, "configuration.sdm.converge.github.providerType", ProviderType.github_com),
-                events: _.get(sdm, "configuration.sdm.converge.github.events", { repoGenerated: false }),
-                ...options,
-            };
-
-            const converge = async (l: any) => {
-                for (const workspaceId of sdm.configuration.workspaceIds) {
-                    await convergeWorkspace(workspaceId, sdm, optsToUse);
-                }
-            };
-
-            if (!!sdm.configuration.workspaceIds && sdm.configuration.workspaceIds.length > 0) {
-                sdm.addTriggeredListener({
-                    listener: converge,
-                    trigger: {
-                        interval: optsToUse.interval,
-                    },
-                });
-                sdm.addStartupListener(converge);
-            }
-
-            if (_.get(optsToUse, "events.repoGenerated") === true) {
-                sdm.addEvent(onRepoProvenance(sdm));
-            }
-
-            sdm.addEvent(onScmProvider(optsToUse));
-            sdm.addEvent(onChannelLinked(sdm));
             sdm.addCommand(IngestOrg);
-            sdm.addCommand(IngestOrgs);
-            sdm.addEvent(onGitHubAppInstallation(optsToUse));
-            sdm.addEvent(onPullRequestClosed(sdm));
-            sdm.addEvent(onPullRequestOpened(sdm));
-        },
-    };
-}
-
-/**
- * EventHandlerRegistration listening for new SCMProvider events and triggering the convergence function
- */
-function onScmProvider(options: ConvergenceOptions): EventHandlerRegistration<OnScmProvider.Subscription> {
-    return {
-        name: "ConvergeGitHubOnScmProvider",
-        subscription: GraphQL.subscription({
-            name: "OnScmProvider",
-            variables: {
-                type: GraphQL.enumValue(options.providerType),
-            },
-        }),
-        description: "Converge on GitHub ScmProvider events",
-        listener: async (e, ctx) => {
-            const providers = e.data;
-            return convergeProvider(providers.SCMProvider[0], ctx.workspaceId, ctx.graphClient);
+            sdm.addEvent(onGitHubAppInstallation());
         },
     };
 }

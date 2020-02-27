@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-import { Configuration } from "@atomist/automation-client";
-import {
-    SoftwareDeliveryMachine,
-    SoftwareDeliveryMachineConfiguration,
-} from "@atomist/sdm";
-import {
-    configureSdm,
-    createSoftwareDeliveryMachine,
-} from "@atomist/sdm-core";
+import { Configuration } from "@atomist/automation-client/lib/configuration";
+import { SoftwareDeliveryMachine } from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachine";
+import { SoftwareDeliveryMachineConfiguration } from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachineOptions";
+import { configureSdm } from "@atomist/sdm/lib/core/machine/configureSdm";
+import { createSoftwareDeliveryMachine } from "@atomist/sdm/lib/core/machine/machineFactory";
 import { githubConvergeSupport } from "../lib/converge/convergeGitHub";
 
 function machine(config: SoftwareDeliveryMachineConfiguration): SoftwareDeliveryMachine {

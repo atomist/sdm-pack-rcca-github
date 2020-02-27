@@ -16,100 +16,12 @@
 
 import {
     GraphClient,
-    logger,
-    MutationNoCacheOptions,
     QueryNoCacheOptions,
-} from "@atomist/automation-client";
-import * as _ from "lodash";
+} from "@atomist/automation-client/lib/spi/graph/GraphClient";
 import {
-    AddWebhookTag,
-    CreateWebhook,
-    DeleteWebhook,
     FetchResourceProvider,
     ScmProvider,
-    ScmProviderById,
-    ScmProviderStateName,
-    SetScmProviderState,
 } from "../typings/types";
-import { nonce } from "../util/utils";
-
-export async function deleteWebhook(graphClient: GraphClient,
-                                    id: string): Promise<void> {
-    try {
-        await graphClient.mutate<DeleteWebhook.Mutation, DeleteWebhook.Variables>({
-            name: "DeleteWebhook",
-            variables: {
-                id,
-            },
-        });
-    } catch (e) {
-        logger.warn(`Failed to delete webhook with id '${id}'`);
-    }
-}
-
-export async function createWebhook(graphClient: GraphClient,
-                                    provider: ScmProvider.ScmProvider,
-                                    tag: { name: string, value: string }): Promise<{ webhook: CreateWebhook.CreateWebhook, secret: string }> {
-    const secret = nonce(50);
-    return {
-        webhook: (await graphClient.mutate<CreateWebhook.Mutation, CreateWebhook.Variables>({
-            name: "CreateWebhook",
-            variables: {
-                header: "X-Hub-Signature",
-                resourceProviderId: provider.id,
-                name: `Atomist`,
-                secret,
-                tags: [{
-                    name: tag.name,
-                    value: tag.value,
-                }],
-            },
-        })).createWebhook, secret,
-    };
-}
-
-export async function addWebhookTag(graphClient: GraphClient,
-                                    webhook: CreateWebhook.CreateWebhook,
-                                    tag: { name: string, value: string }): Promise<void> {
-    await graphClient.mutate<AddWebhookTag.Mutation, AddWebhookTag.Variables>({
-        name: "AddWebhookTag",
-        variables: {
-            id: webhook.id,
-            name: tag.name,
-            value: tag.value,
-        },
-    });
-}
-
-export async function setProviderState(graphClient: GraphClient,
-                                       provider: ScmProvider.ScmProvider,
-                                       state: ScmProviderStateName = ScmProviderStateName.converged,
-                                       errors?: string[]): Promise<void> {
-    const newError = (errors || []).sort((e1, e2) => e1.localeCompare(e2)).join(", ");
-    const currentState = _.get(provider, "state.name");
-    const currentError = _.get(provider, "state.error");
-    if (state !== currentState || newError !== currentError) {
-        await graphClient.mutate<SetScmProviderState.Mutation, SetScmProviderState.Variables>({
-            name: "SetScmProviderState",
-            variables: {
-                id: provider.id,
-                state,
-                error: newError,
-            },
-        });
-    }
-}
-
-export async function loadScmProvider(graphClient: GraphClient,
-                                      id: string): Promise<ScmProvider.ScmProvider> {
-    return (await graphClient.query<ScmProviderById.Query, ScmProviderById.Variables>({
-        name: "ScmProviderById",
-        variables: {
-            id,
-        },
-        options: QueryNoCacheOptions,
-    })).SCMProvider[0];
-}
 
 export async function loadResourceProvider(graphClient: GraphClient,
                                            id: string): Promise<FetchResourceProvider.ResourceProvider> {

@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import {
-    HandlerContext,
-    logger,
-    TokenCredentials,
-} from "@atomist/automation-client";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import { TokenCredentials } from "@atomist/automation-client/lib/operations/common/ProjectOperationCredentials";
+import { logger } from "@atomist/automation-client/lib/util/logger";
+import { SdmGoalEvent } from "@atomist/sdm/lib/api/goal/SdmGoalEvent";
 import {
     GoalCompletionListener,
     GoalCompletionListenerInvocation,
+} from "@atomist/sdm/lib/api/listener/GoalCompletionListener";
+import {
     GoalsSetListener,
     GoalsSetListenerInvocation,
-    SdmGoalEvent,
-    SoftwareDeliveryMachine,
-} from "@atomist/sdm";
+} from "@atomist/sdm/lib/api/listener/GoalsSetListener";
+import { SoftwareDeliveryMachine } from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachine";
 import { gitHub } from "../converge/github";
 import { SdmGoalState } from "../typings/types";
 
