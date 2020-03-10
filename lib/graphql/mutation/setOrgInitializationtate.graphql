@@ -1,0 +1,6 @@
+mutation setOrgInitializationState($providerId: String!, $orgId: String!, $initializationState: OrgInitializationState!) {
+    setSCMOrgInitializationState(scmProviderId: $providerId, scmOrgId: $orgId, initializationState: $initializationState) {
+        id
+        initializationState
+    }
+}

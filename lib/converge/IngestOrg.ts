@@ -18,16 +18,17 @@ import { Success } from "@atomist/automation-client/lib/HandlerResult";
 import { QueryNoCacheOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
 import { logger } from "@atomist/automation-client/lib/util/logger";
 import { CommandHandlerRegistration } from "@atomist/sdm/lib/api/registration/CommandHandlerRegistration";
-import {
-    AppsListReposResponseRepositoriesItem,
-} from "@octokit/rest";
+import { AppsListReposResponseRepositoriesItem } from "@octokit/rest";
 import * as _ from "lodash";
 import {
     GitHubAppInstallationById,
     IngestScmRepos,
+    OrgInitializationState,
     ReposByOrg,
     ScmRepoInput,
     ScmReposInput,
+    SetOrgInitializationStateMutation,
+    SetOrgInitializationStateMutationVariables,
 } from "../typings/types";
 import { gitHub } from "./github";
 
@@ -111,6 +112,15 @@ export const IngestOrg: CommandHandlerRegistration<IngestOrgParameters> = {
                 });
             }
         }
+
+        await ci.context.graphClient.mutate<SetOrgInitializationStateMutation, SetOrgInitializationStateMutationVariables>({
+            name: "setOrgInitializationState",
+            variables: {
+                initializationState: OrgInitializationState.initialized,
+                orgId: ci.parameters.orgId,
+                providerId: ci.parameters.id,
+            },
+        });
 
         logger.info(`Ingesting repos for org '${ci.parameters.org}' completed`);
 
